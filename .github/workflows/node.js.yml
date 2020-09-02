@@ -25,5 +25,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: ESLint Action
+      working-directory: ./mobile-app
       uses: hallee/eslint-action@1.0.3
 
