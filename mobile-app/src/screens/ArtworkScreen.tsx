@@ -11,9 +11,8 @@ const styles = StyleSheet.create({
 });
 
 const ArtworkScreen: React.FC = () => (
-  
   <View style={styles.container}>
-    <Title text="Artwork Screen"/>
+    <Title text="Artwork Screen" />
     <Text>Artwork Cards will ultimately be displayed here!</Text>
   </View>
 );
