@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { TouchableWithoutFeedback, PanGestureHandler } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {... , PanGestureHandler }
 
 // import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
@@ -109,16 +109,15 @@ const styles = StyleSheet.create({
   });
 
   interface Props {
-      paused: boolean,
       mediaTitle: string,
-      playpause(arg1: boolean) : any; 
-      
+      // playpause(arg1: boolean) : any; 
   }
 
-  export function MediaPlayer(props: Props) {
+  const MediaPlayer: React.FC<Props> = (props: Props) => {
     const [up, setUp] = useState(false);
     const pos = useRef(new Animated.Value(snapBottom)).current;
-    props.playpause = (arg1: boolean) => {arg1 = !arg1};
+    // const playpause = (arg1: boolean) => {arg1 = !arg1};
+    const [paused, setPaused] = useState(false);
 
     const handlebarTapHandler = () => {
         if (up) {
@@ -141,12 +140,12 @@ const styles = StyleSheet.create({
     };
 
     let playpause;
-    if (props.paused) {
+    if (paused) {
         playpause = (
         <TouchableOpacity
             style={styles.play}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress={(props.playpause(props.paused))}
+            onPress= {() => setPaused(false)}
         />
         );
     } else {
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
         <TouchableOpacity
             style={styles.pause}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress={props.playpause(props.paused)}
+            onPress={() => setPaused(true)}
         />
         );
     }
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     );
 }
 
-
+export default MediaPlayer;
 // const mapStateToProps = (state) => {
 //   const { mediaTitle, paused } = state.media;
 //   return { mediaTitle, paused };
