@@ -5,9 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
-  StyleProp,
 } from 'react-native';
-import { useLinkProps } from '@react-navigation/native';
 
 // import { connect } from 'react-redux';
 
@@ -63,7 +61,7 @@ const styles = StyleSheet.create({
       transcript: string,
   }
 
-  export function MediaExpanded(props: Props) {
+  const MediaExpanded: React.FC<Props> = (props: Props) => {
     let content;
     if (props.playing) {
         content = (
@@ -98,4 +96,6 @@ const styles = StyleSheet.create({
           { content }
         </>
       );
-    };
+    }
+
+    export default MediaExpanded;

@@ -15,7 +15,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {...
 // import { bindActionCreators } from 'redux';
 // import { actionCreators as actions } from '../actions/media';
 
-import { MediaExpanded } from './MediaExpanded';
+import MediaExpanded from './MediaExpanded';
 
 const snapTop = 192;
 const snapBottom = Dimensions.get('window').height - 108;
