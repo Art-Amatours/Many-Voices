@@ -111,14 +111,14 @@ const styles = StyleSheet.create({
   interface Props {
       paused: boolean,
       mediaTitle: string,
-      playpause() : any
+      playpause(arg1: boolean) : any; 
       
   }
 
   export function MediaPlayer(props: Props) {
     const [up, setUp] = useState(false);
     const pos = useRef(new Animated.Value(snapBottom)).current;
-    // props.playpause = () => {props.paused = !props.paused};
+    props.playpause = (arg1: boolean) => {arg1 = !arg1};
 
     const handlebarTapHandler = () => {
         if (up) {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         <TouchableOpacity
             style={styles.play}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress={() => {props.paused = !props.paused}}
+            onPress={(props.playpause(props.paused))}
         />
         );
     } else {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
         <TouchableOpacity
             style={styles.pause}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress={() => {props.paused = !props.paused}}
+            onPress={props.playpause(props.paused)}
         />
         );
     }
