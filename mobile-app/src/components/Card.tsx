@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
 
 // Component
 
-interface Props {
+export interface Props {
   artwork: {
     title: string;
     artist: string;
@@ -70,7 +70,13 @@ interface Props {
   };
 }
 
-const Card: React.FC<Props> = (props: Props) => (
+export interface artwork {
+  title: string;
+  artist: string;
+  imageURLs: string[];
+}
+
+export const Card: React.FC<Props> = (props: Props) => (
   <TouchableOpacity style={styles.card} activeOpacity={activeOpacity}>
     <ImageBackground
       source={{ uri: props.artwork.imageURLs[0] }}
@@ -86,4 +92,3 @@ const Card: React.FC<Props> = (props: Props) => (
   </TouchableOpacity>
 );
 
-export default Card;
