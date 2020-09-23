@@ -1,7 +1,7 @@
 import React from "react";
-import { Text, View, StyleSheet, TextStyle } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 
-var tagSample = ["art", "aart", "aart"]
+
 
 interface Props {
   data: string[];
@@ -11,10 +11,9 @@ export const Tag: React.FC<Props> = (props: Props) => (
   
     <View style={styles.container}>
     
-      { props.data.map((item, key)=>(
+      { props.data.map((item)=>(
          <Text 
-            key={key} 
-            style={styles.TextStyle} > { item } 
+            style={styles.TextStyle} > { item + "  " } 
          </Text>)
       )}
 
