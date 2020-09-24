@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -32,5 +33,19 @@ func (s *Server) Start() {
 
 // helloHandler handles requests on the "/hello" route.
 func (s *Server) helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello world!")
+	constructAndSendResponse(w, "Hello world!")
+}
+
+// constructAndSendResponse adds important, common headers to endpoint responses, and marshals the
+// provided response body into JSON.
+func constructAndSendResponse(w http.ResponseWriter, body interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+
+	err := json.NewEncoder(w).Encode(body)
+	if err != nil {
+		errCode := http.StatusInternalServerError
+		errMsg := fmt.Sprintf("Failed to encode response as JSON: %s", err.Error())
+		http.Error(w, errMsg, errCode)
+		return
+	}
 }
