@@ -32,6 +32,8 @@ type Bucket struct {
 	// fileExtRegexp stores a compiled regular expression for stripping out file extensions from
 	// file names.
 	fileExtRegexp *regexp.Regexp
+
+	imagesSubDirRegexp *regexp.Regexp
 }
 
 // NewBucket sets up a new AWS session and an S3 service client, then returns a new Bucket object
@@ -48,15 +50,19 @@ func NewBucket(name, region string) (*Bucket, error) {
 	// all clear to use it in HTTP handler functions.
 	svc := s3.New(sess)
 
-	// This step is kinda expensive. Instead of doing this in FetchAllArtwork() and compiling a
+	// These steps are kinda expensive. Instead of doing this in FetchAllArtwork() and compiling a
 	// regexp each time we traverse the bucket's file system, we do this once on Bucket object
 	// creation.
 	fileExtRegexp, err := regexp.Compile(".[0-9a-z]+$") // Filtering for alphanumeric values only
 	if err != nil {
 		return nil, fmt.Errorf("Failed to compile file extension regexp: %v", err)
 	}
+	imagesSubDirRegexp, err := regexp.Compile(`^[0-9a-zA-Z-_]+\/images\/.*`)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to compile images subdir regexp: %v", err)
+	}
 
-	return &Bucket{name, region, svc, fileExtRegexp}, nil
+	return &Bucket{name, region, svc, fileExtRegexp, imagesSubDirRegexp}, nil
 }
 
 // ArtworkInfo describes all information about an artwork in the bucket.
@@ -65,6 +71,7 @@ type ArtworkInfo struct {
 	Artist      string   `json:"artist"`
 	Description string   `json:"description"`
 	Tags        []string `json:"tags"`
+	ImageURLs   []string `json:"imageURLs"`
 }
 
 // CritiqueInfo describes information about each audio critique associated with
@@ -100,7 +107,8 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// The cur object is a top-level directory. Create a new ArtworkInfo object in
 			// artworkList for the artwork that this directory represents.
 			newArtworkInfoObj := ArtworkInfo{
-				Tags: make([]string, 0),
+				Tags:      make([]string, 0),
+				ImageURLs: make([]string, 0),
 			}
 			artworkList = append(artworkList, &newArtworkInfoObj)
 			curArtworkIndex++
@@ -117,6 +125,16 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
 			go addInfo(objectURL, artworkList, curArtworkIndex, &wg, errChan)
+
+			continue
+		}
+
+		// Look for images inside of a particular artwork's "images/" dir.
+		if *object.Size > 0 && b.imagesSubDirRegexp.MatchString(*object.Key) {
+			// Construct public URL for the object.
+			objectURL := bucketURLPrefix + b.name + bucketURLSuffix + *object.Key
+
+			addImage(objectURL, artworkList, curArtworkIndex)
 
 			continue
 		}
@@ -185,4 +203,11 @@ func addInfo(
 	curArtworkInfoObj.Artist = bodyAsObj.Artist
 	curArtworkInfoObj.Description = bodyAsObj.Description
 	curArtworkInfoObj.Tags = bodyAsObj.Tags
+}
+
+// addImage is a helper func to FetchAllArtwork(). It adds the provided URL to the images slice on
+// the artworkInfo struct at the curArtworkIndex'th index of the artworkList slice.
+func addImage(fileURL string, artworkList []*ArtworkInfo, curArtworkIndex int) {
+	curArtworkImagesList := artworkList[curArtworkIndex].ImageURLs
+	artworkList[curArtworkIndex].ImageURLs = append(curArtworkImagesList, fileURL)
 }
