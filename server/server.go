@@ -12,11 +12,13 @@ import (
 type Server struct {
 	// port stores the port number that the server listens for requests on.
 	port int
+	// bucket facilitates all interactions with an S3 bucket.
+	bucket *Bucket
 }
 
 // NewServer returns a new Server object initialized with the provided port number and Bucket.
-func NewServer(port int) *Server {
-	return &Server{port}
+func NewServer(port int, bucket *Bucket) *Server {
+	return &Server{port, bucket}
 }
 
 // Start registers all of the handler funcs with their corresponding routes and begins listening for
@@ -24,6 +26,7 @@ func NewServer(port int) *Server {
 func (s *Server) Start() {
 	// Register routes with their respective handler funcs.
 	http.HandleFunc("/hello", s.helloHandler)
+	http.HandleFunc("/bucketContents", s.bucketContentsHandler)
 
 	// Stand up the server.
 	log.Printf("Listening on port %d....", s.port)
@@ -34,6 +37,18 @@ func (s *Server) Start() {
 // helloHandler handles requests on the "/hello" route.
 func (s *Server) helloHandler(w http.ResponseWriter, r *http.Request) {
 	constructAndSendResponse(w, "Hello world!")
+}
+
+// bucketContentsHandler handles requests on the "/bucketContents" route.
+func (s *Server) bucketContentsHandler(w http.ResponseWriter, r *http.Request) {
+	// Traverse the entire bucket and fetch the contents.
+	contents, err := s.bucket.FetchAllArtwork()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	constructAndSendResponse(w, contents)
 }
 
 // constructAndSendResponse adds important, common headers to endpoint responses, and marshals the

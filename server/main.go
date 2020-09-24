@@ -22,18 +22,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create a new Bucket object: %v\n", err)
 	}
-	// TODO: TEMPORARY! JUST FOR TESTING TO SEE IF WE'RE WIRED UP TO THE BUCKET IN THE CLOUD
-	contents, _ := bucket.FetchAllArtwork()
-	for _, artwork := range contents {
-		log.Printf("%+v\n", artwork)
-	}
 
 	// Initialize a Server object.
 	port, err := strconv.Atoi(portAsStr)
 	if err != nil {
 		log.Fatalf("Failed to convert PORT env var to int: %v\n", err)
 	}
-	server := NewServer(port)
+	server := NewServer(port, bucket)
 
 	server.Start()
 }
