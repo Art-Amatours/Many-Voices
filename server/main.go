@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
 
 	// Automatically loads in environment variables from the .env file.
-	"github.com/aws/aws-sdk-go/service/s3"
+
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -24,8 +23,10 @@ func main() {
 		log.Fatalf("Failed to create a new Bucket object: %v\n", err)
 	}
 	// TODO: TEMPORARY! JUST FOR TESTING TO SEE IF WE'RE WIRED UP TO THE BUCKET IN THE CLOUD
-	contents, _ := bucket.svc.ListObjectsV2(&s3.ListObjectsV2Input{Bucket: &bucket.name})
-	fmt.Printf("%+v\n", contents)
+	contents, _ := bucket.FetchAllArtwork()
+	for _, artwork := range contents {
+		log.Printf("%+v\n", artwork)
+	}
 
 	// Initialize a Server object.
 	port, err := strconv.Atoi(portAsStr)
