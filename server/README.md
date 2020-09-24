@@ -16,6 +16,15 @@ Server that exposes HTTP API endpoints for the Many Voices mobile application to
 1. `$ go run *.go`
     - Or if you're hungry for speed, you can compile a standalone binary for your machine
     - `$ go build && ./Many-Voices`
+1. `$ curl localhost:PORT/hello` to make sure that you're up and running
+
+## Usage
+
+In a client application, hit the `/bucketContents` endpoint to get a blob of JSON with info about all artwork and critiques that are being stored in our storage solution.
+
+If you'd like to test this outside of your client application, you can use something like [Postman](https://www.postman.com), `curl`, or even a browser.
+
+    $ curl localhost:PORT/bucketContents
 
 ## Thoughts and Reminders
 
