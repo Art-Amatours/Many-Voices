@@ -34,6 +34,8 @@ type Bucket struct {
 	fileExtRegexp *regexp.Regexp
 
 	imagesSubDirRegexp *regexp.Regexp
+
+	critiquesSubDirRegexp *regexp.Regexp
 }
 
 // NewBucket sets up a new AWS session and an S3 service client, then returns a new Bucket object
@@ -57,21 +59,26 @@ func NewBucket(name, region string) (*Bucket, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to compile file extension regexp: %v", err)
 	}
-	imagesSubDirRegexp, err := regexp.Compile(`^[0-9a-zA-Z-_]+\/images\/.*`)
+	imagesSubDirRegexp, err := regexp.Compile(`^[0-9a-zA-Z-_]+\/images\/.*`) // Filtering for a */images/ subdir.
 	if err != nil {
 		return nil, fmt.Errorf("Failed to compile images subdir regexp: %v", err)
 	}
+	critiquesSubDirRegexp, err := regexp.Compile(`^[0-9a-zA-Z-_]+\/critiques\/[0-9a-zA-Z-_]+\/.*`) // Filtering for a */critiques/*/ subdir.
+	if err != nil {
+		return nil, fmt.Errorf("Failed to compile critiques subdir regexp: %v", err)
+	}
 
-	return &Bucket{name, region, svc, fileExtRegexp, imagesSubDirRegexp}, nil
+	return &Bucket{name, region, svc, fileExtRegexp, imagesSubDirRegexp, critiquesSubDirRegexp}, nil
 }
 
 // ArtworkInfo describes all information about an artwork in the bucket.
 type ArtworkInfo struct {
-	Title       string   `json:"title"`
-	Artist      string   `json:"artist"`
-	Description string   `json:"description"`
-	Tags        []string `json:"tags"`
-	ImageURLs   []string `json:"imageURLs"`
+	Title       string          `json:"title"`
+	Artist      string          `json:"artist"`
+	Description string          `json:"description"`
+	Tags        []string        `json:"tags"`
+	ImageURLs   []string        `json:"imageURLs"`
+	Critiques   []*CritiqueInfo `json:"critiques"`
 }
 
 // CritiqueInfo describes information about each audio critique associated with
@@ -81,6 +88,7 @@ type CritiqueInfo struct {
 	Critic     string   `json:"critic"`
 	Transcript string   `json:"transcript"`
 	Tags       []string `json:"tags"`
+	// AudioURL   string   `json:"audioURL`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.
@@ -96,6 +104,9 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 	// Begin at -1 because when we encounter a new directory, we increment this var. When we
 	// encounter our first directory and increment this variable, we want this var to equal 0.
 	curArtworkIndex := -1
+	// Begin at -1 because when we encounter a new critique, we increment this var. When we
+	// encounter our first directory and increment this variable, we want this var to equal 0.
+	curCritiqueIndexes := make([]int, 0)
 	// Pass this channel in with each addInfo() call. If addInfo() is called and something goes
 	// wrong, addInfo() will push an error onto this channel.
 	errChan := make(chan error)
@@ -112,6 +123,20 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			}
 			artworkList = append(artworkList, &newArtworkInfoObj)
 			curArtworkIndex++
+			curCritiqueIndexes = append(curCritiqueIndexes, -1)
+
+			continue
+		}
+
+		if *object.Size == 0 && b.critiquesSubDirRegexp.MatchString(*object.Key) {
+			// The cur object is a critiques/ subdirectory. Create a new CritiqueInfo object in
+			// the corresponding ArtworkInfo struct's artworkList for the critique that this
+			// subdirectory represents.
+			newCritiqueInfoObj := CritiqueInfo{
+				Tags: make([]string, 0),
+			}
+			artworkList[curArtworkIndex].Critiques = append(artworkList[curArtworkIndex].Critiques, &newCritiqueInfoObj)
+			curCritiqueIndexes[curArtworkIndex]++
 
 			continue
 		}
@@ -124,7 +149,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// Download the top-level .json file for this artwork and store its contents in the
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
-			go addInfo(objectURL, artworkList, curArtworkIndex, &wg, errChan)
+			go addArtworkInfo(objectURL, artworkList, curArtworkIndex, &wg, errChan)
 
 			continue
 		}
@@ -135,6 +160,20 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			objectURL := bucketURLPrefix + b.name + bucketURLSuffix + *object.Key
 
 			addImage(objectURL, artworkList, curArtworkIndex)
+
+			continue
+		}
+
+		// Look for critique info inside of a .json file from an artwork's critiques/ dir.
+		if *object.Size > 0 && b.critiquesSubDirRegexp.MatchString(*object.Key) && b.fileExtRegexp.FindString(*object.Key) == ".json" {
+			// Construct public URL for the object.
+			objectURL := bucketURLPrefix + b.name + bucketURLSuffix + *object.Key
+
+			critiqueList := artworkList[curArtworkIndex].Critiques
+			// Download the .json file for the current critique and store its contents in the
+			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
+			wg.Add(1)
+			go addCritiqueInfo(objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], &wg, errChan)
 
 			continue
 		}
@@ -164,11 +203,11 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 	return artworkList, nil
 }
 
-// addInfo is a helper func to FetchAllArtwork(). It fetches the JSON file at the provided URL, then
-// uses its contents to populate fields on the artworkInfo struct at the curArtworkIndex'th index of
-// the artworkList slice. If something goes wrong, it will push an error onto the provided error
-// channel.
-func addInfo(
+// addArtworkInfo is a helper func to FetchAllArtwork(). It fetches the JSON file at the provided
+// URL, then uses its contents to populate fields on the artworkInfo struct at the
+// curArtworkIndex'th index of the artworkList slice. If something goes wrong, it will push an error
+// onto the provided error channel.
+func addArtworkInfo(
 	fileURL string,
 	artworkList []*ArtworkInfo,
 	curArtworkIndex int,
@@ -203,6 +242,47 @@ func addInfo(
 	curArtworkInfoObj.Artist = bodyAsObj.Artist
 	curArtworkInfoObj.Description = bodyAsObj.Description
 	curArtworkInfoObj.Tags = bodyAsObj.Tags
+}
+
+// addCritiqueInfo is a helper func to FetchAllArtwork(). It fetches the JSON file at the provided
+// URL, then uses its contents to populate fields on the critiqueInfo struct at the
+// curCritiqueIndex'th index of the critiqueList slice. If something goes wrong, it will push an
+// error onto the provided error channel.
+func addCritiqueInfo(
+	fileURL string,
+	critiqueList []*CritiqueInfo,
+	curCritiqueIndex int,
+	wg *sync.WaitGroup,
+	errChan chan error,
+) {
+	defer wg.Done()
+
+	// Fetch the contents of the file in the bucket at the provided fileURL.
+	//
+	// You can think of this conceptually like hitting an HTTP API endpoint, and the file contents
+	// are the response body.
+	resp, err := http.Get(fileURL)
+	if err != nil {
+		errChan <- fmt.Errorf("Failed to fetch JSON file from bucket: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Marshal the response body's contents.
+	bodyAsObj := CritiqueInfo{}
+	err = json.NewDecoder(resp.Body).Decode(&bodyAsObj)
+	if err != nil {
+		errChan <- fmt.Errorf("Failed to marshal JSON file into CritiqueInfo object: %v", err)
+		return
+	}
+
+	// Populate fields on the curCritiqueIndex'th index of the critiqueList slice with the info from
+	// the JSON file that we just fetched.
+	curCritiqueInfoObj := critiqueList[curCritiqueIndex]
+	curCritiqueInfoObj.Title = bodyAsObj.Title
+	curCritiqueInfoObj.Critic = bodyAsObj.Critic
+	curCritiqueInfoObj.Transcript = bodyAsObj.Transcript
+	curCritiqueInfoObj.Tags = bodyAsObj.Tags
 }
 
 // addImage is a helper func to FetchAllArtwork(). It adds the provided URL to the images slice on
