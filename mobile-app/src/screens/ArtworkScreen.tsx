@@ -1,7 +1,9 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { Title } from '../components/Title';
 import { Card, artwork} from '../components/Card';
+import { Spacer } from '../components/Spacer';
+import { SearchBar } from '../components/SearchBar';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
@@ -11,11 +13,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 45,
+    paddingBottom: Dimensions.get('window').height * 0.09,
   },
   gallery: {
-    marginTop: 18,
-    marginBottom: 70,
+    // marginTop: 18,
+    marginBottom: 12,
     marginHorizontal : 20,
+    paddingBottom: 0,
   }
 });
 
@@ -31,12 +35,14 @@ const testArtwork3 : artwork = {title: "Test3", artist: "Artist3", imageURLs:ima
 const ArtworkScreen: React.FC = () => (
   <View style={styles.container}>
     <Title text="Artwork Screen" />
+    <SearchBar text = "Search"/>
     <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
       <Card artwork = {testArtwork}></Card>
       <Card artwork = {testArtwork2}></Card>
       <Card artwork = {testArtwork3}></Card>
+      <Spacer text = ""></Spacer>
     </ScrollView>
-    <Text>Artwork Cards will ultimately be displayed here!</Text>
+    {/* <Text>Artwork Cards will ultimately be displayed here!</Text> */}
   </View>
 );
 
