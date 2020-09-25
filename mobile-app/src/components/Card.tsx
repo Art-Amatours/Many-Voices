@@ -20,7 +20,7 @@ const cardHeight = Math.round(0.82 * cardWidth);
 
 
 //Generic art tags to use until we start pulling in database information
-let tagGeneric = ["Art", "Aart", "Aaart"]
+const tagGeneric = ["Art", "Aart", "Aaart"]
 
 const styles = StyleSheet.create({
   row: {
