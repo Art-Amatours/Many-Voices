@@ -10,9 +10,11 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 8,
     marginLeft: 28,
+    marginRight: 28,
     fontSize: 34,
     fontWeight: 'bold',
     color: 'black',
+    textAlign: 'center',
   },
 });
 

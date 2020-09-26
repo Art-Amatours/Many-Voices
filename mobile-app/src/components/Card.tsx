@@ -14,7 +14,7 @@ const activeOpacity = 0.8;
 const borderRadius = 18;
 const deviceScreenWidth = Math.round(Dimensions.get('window').width);
 const cardWidth = Math.round(0.86 * deviceScreenWidth);
-const cardHeight = Math.round(0.82 * cardWidth);
+const cardHeight = Math.round(0.71 * cardWidth);
 
 const styles = StyleSheet.create({
   row: {
@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
   card: {
     width: cardWidth,
     height: cardHeight,
-    marginBottom: 24,
+    marginTop: 24,
+    // marginBottom: 12,
 
     shadowColor: 'black',
     shadowOpacity: 0.35,
