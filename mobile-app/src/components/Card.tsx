@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 
+import {Tag} from './Tag'
+
 // Styles
 
 const activeOpacity = 0.8;
@@ -15,6 +17,10 @@ const borderRadius = 18;
 const deviceScreenWidth = Math.round(Dimensions.get('window').width);
 const cardWidth = Math.round(0.86 * deviceScreenWidth);
 const cardHeight = Math.round(0.71 * cardWidth);
+
+
+//Generic art tags to use until we start pulling in database information
+const tagGeneric = ["Art", "Aart", "Aaart"]
 
 const styles = StyleSheet.create({
   row: {
@@ -89,7 +95,13 @@ export const Card: React.FC<Props> = (props: Props) => (
           <Text style={styles.subtitle}>{props.artwork.artist}</Text>
         </View>
       </View>
+    
+      <View style={[styles.labels, styles.row]}>
+        <Tag data= {tagGeneric} />
+      </View>
+
     </ImageBackground>
   </TouchableOpacity>
 );
 
+export default Card;
