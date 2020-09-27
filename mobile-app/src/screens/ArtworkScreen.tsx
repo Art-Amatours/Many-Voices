@@ -6,6 +6,10 @@ import { Spacer } from '../components/Spacer';
 import { SearchBar } from '../components/SearchBar';
 import { ScrollView } from 'react-native-gesture-handler';
 
+import jsonData from '../../assets/artwork_format.json';
+
+// import * as jsonData from '.../assets/artwork_format.json'
+
 
 
 const styles = StyleSheet.create({
@@ -24,7 +28,7 @@ const styles = StyleSheet.create({
 });
 
 const imageURLList: string[] = ["https://cdn.pixabay.com/photo/2017/08/30/12/45/girl-2696947_960_720.jpg"]
-const testArtwork : artwork = {title: "Test", artist: "Artist", imageURLs:imageURLList}
+const testArtwork : artwork = {title: jsonData[0].artist, artist: "Artist", imageURLs:imageURLList}
 
 const imageURLList2: string[] = ["https://get.pxhere.com/photo/modern-art-art-graphic-design-child-art-watercolor-paint-painting-visual-arts-illustration-Colorfulness-graphics-paint-acrylic-paint-drawing-artwork-1568485.jpg"]
 const testArtwork2 : artwork = {title: "Test2", artist: "Artist2", imageURLs:imageURLList2}
@@ -32,18 +36,27 @@ const testArtwork2 : artwork = {title: "Test2", artist: "Artist2", imageURLs:ima
 const imageURLList3: string[] = ["https://i1.pickpik.com/photos/561/876/856/various-art-brush-paint-preview.jpg"]
 const testArtwork3 : artwork = {title: "Test3", artist: "Artist3", imageURLs:imageURLList3}
 
-const ArtworkScreen: React.FC = () => (
+const ArtworkScreen: React.FC = () => {
+
+  // const artworkData : string = JSON.parse(jsonData);
+
+  const cards = jsonData.map((item, key)=>{
+    const testArtwork : artwork = {title: item.title, artist: item.artist, imageURLs: item.imageURLs};
+    return (
+      <Card key = {key} artwork = {testArtwork} tagdata = { item.tags }></Card>
+  );
+  });
+
+  return (
   <View style={styles.container}>
     <Title text="Artwork Screen" />
     <SearchBar text = "Search"/>
     <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
-      <Card artwork = {testArtwork}></Card>
-      <Card artwork = {testArtwork2}></Card>
-      <Card artwork = {testArtwork3}></Card>
-      <Spacer text = ""></Spacer>
+      { cards }
     </ScrollView>
     {/* <Text>Artwork Cards will ultimately be displayed here!</Text> */}
   </View>
-);
+  )
+};
 
 export default ArtworkScreen;
