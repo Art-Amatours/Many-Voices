@@ -9,13 +9,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
   },
-  text: {
-    marginBottom: 8,
-    marginLeft: 28,
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: 'black',
-  },
   search: {
     borderBottomLeftRadius: borderRadius,
     borderBottomRightRadius: borderRadius,
