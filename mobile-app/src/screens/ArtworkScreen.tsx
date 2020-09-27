@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { Title } from '../components/Title';
 import { Card, artwork} from '../components/Card';
 import { Spacer } from '../components/Spacer';

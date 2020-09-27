@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 
 // Component
 
-export interface Props {
+interface Props {
   artwork: {
     title: string;
     artist: string;
