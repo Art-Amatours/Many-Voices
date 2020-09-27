@@ -54,9 +54,7 @@ const ArtworkScreen: React.FC = () => (
       <Card artwork={testArtwork}></Card>
       <Card artwork={testArtwork2}></Card>
       <Card artwork={testArtwork3}></Card>
-      {/* <Spacer text=""></Spacer> */}
     </ScrollView>
-    {/* <Text>Artwork Cards will ultimately be displayed here!</Text> */}
   </View>
 );
 
