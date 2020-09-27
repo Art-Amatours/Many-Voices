@@ -1,6 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import React, { useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 // Styles
 
@@ -29,27 +28,26 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginTop: 12,
     backgroundColor: 'lightgrey',
-  }
+  },
 });
 
 // Component
 
 interface Props {
-    text: string;
+  text: string;
 }
 
-let searchQuery : string;
+export const SearchBar: React.FC<Props> = (props: Props) => {
+  const [query, setQuery] = useState('');
 
-function onChangeText(text : string) {
-  searchQuery = text;
-}
-
-export const SearchBar: React.FC<Props> = (props: Props) => (
+  return (
     <View style={styles.container}>
       <TextInput
-      style={styles.search}
-      onChangeText={text => {onChangeText(text)}}
-      placeholder={props.text}
-    />
+        style={styles.search}
+        placeholder={props.text}
+        value={query}
+        onChangeText={(newQuery) => setQuery(newQuery)}
+      />
     </View>
-);
+  );
+};
