@@ -98,13 +98,12 @@ export const Card: React.FC<Props> = (props: Props) => (
           <Text style={styles.title}>{props.artwork.title}</Text>
           <Text style={styles.subtitle}>{props.artwork.artist}</Text>
         </View>
-        <Tag style = {styles.taglist} data= {tagGeneric} />
-
+        <Tag data={tagGeneric}/>
       </View>
     
       {/* <View style={[styles.labels, styles.row]}> */}
       {/* </View> */}
-
+      
     </ImageBackground>
   </TouchableOpacity>
 );
