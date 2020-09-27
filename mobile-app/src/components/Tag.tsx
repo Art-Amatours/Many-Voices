@@ -1,37 +1,49 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-
+import { Text, ScrollView, StyleSheet, View } from "react-native";
 
 
 interface Props {
-  data: string[];
+  data: string[][];
 }
 
 export const Tag: React.FC<Props> = (props: Props) => {
 
   const data_text = props.data.map((item, key)=>(
-    <Text style={styles.TextStyle} key={key} >
-        { item }  
-    </Text>
+    <View style={[styles.tag, { backgroundColor: item[1]}]} key={key}>
+      <Text style={styles.tagText} key={key} >
+          { item[0] }  
+      </Text>
+    </View>
   ));
 
   return (
-    <View style={styles.container}>
-      { data_text }
-    </View>);
+    <ScrollView style={styles.container} horizontal = { true } showsHorizontalScrollIndicator = { false }>
+        { data_text }
+    </ScrollView>);
 }
 
 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "blue", 
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // backgroundColor: "blue", 
+    // flex: 1,
+    // alignItems: 'center',
+    // justifyContent: 'flex-end',
   },
-  TextStyle:{
-    fontSize : 25,
-     textAlign: 'center'
-  }
+  tag: {
+    marginLeft: 8,
+    marginTop: 4,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 10,
+    height: 30,
+  },
+  tagText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'white',
+  },
 });

@@ -20,7 +20,7 @@ const cardHeight = Math.round(0.71 * cardWidth);
 
 
 //Generic art tags to use until we start pulling in database information
-const tagGeneric = ["Art", "Aart", "Aaart"]
+const tagGeneric = [["Art", '#34c759'], ["Aart", '#5ac8fa'], ["Aaart", '#ff3b30']]
 
 const styles = StyleSheet.create({
   row: {
@@ -59,12 +59,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '800',
     color: 'white',
+    paddingRight: 48,
   },
   subtitle: {
     fontWeight: '600',
     textTransform: 'uppercase',
     color: '#aeaeb2',
   },
+  taglist: {
+    
+  }
 });
 
 // Component
@@ -94,11 +98,12 @@ export const Card: React.FC<Props> = (props: Props) => (
           <Text style={styles.title}>{props.artwork.title}</Text>
           <Text style={styles.subtitle}>{props.artwork.artist}</Text>
         </View>
+        <Tag style = {styles.taglist} data= {tagGeneric} />
+
       </View>
     
-      <View style={[styles.labels, styles.row]}>
-        <Tag data= {tagGeneric} />
-      </View>
+      {/* <View style={[styles.labels, styles.row]}> */}
+      {/* </View> */}
 
     </ImageBackground>
   </TouchableOpacity>
