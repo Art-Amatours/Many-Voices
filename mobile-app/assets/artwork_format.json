@@ -1,0 +1,69 @@
+[
+    {
+        "title": "Mona Lisa",
+        "artist": "da Vinci",
+        "description": "The Mona Lisa YEP",
+        "tags": [
+            [
+                "Vintage",
+                "#34c759"
+            ],
+            [
+                "Stolen",
+                "#5ac8fa"
+            ]
+        ],
+        "imageURLs": [
+            "https://many-voices-app-content.s3.amazonaws.com/mona_lisa/images/mona-lisa.jpg",
+            "https://many-voices-app-content.s3.amazonaws.com/mona_lisa/images/yamlp.png"
+        ],
+        "critiques": [
+            {
+                "title": "bruh it's late",
+                "critic": "Stephanie",
+                "transcript": "mhm YEP",
+                "tags": [
+                    "Infactual"
+                ]
+            },
+            {
+                "title": "On Gender Inequality in the da Vinci Household",
+                "critic": "Risk Astley",
+                "transcript": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel ante tempus, tempor arcu sit amet, elementum sem. Donec interdum erat ut quam aliquet rutrum. Cras pellentesque urna non arcu sodales, vel interdum lectus euismod. Aliquam eu egestas libero. Vestibulum bibendum nisl a ultrices sodales. Proin elementum tristique mattis. Vestibulum tempus ante ut libero tincidunt sagittis. Aenean eleifend iaculis venenatis. Morbi lacus justo, tempus dapibus vehicula in, blandit a purus.",
+                "tags": [
+                    "Controversial",
+                    "Parody",
+                    "Funny"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Weeping Woman",
+        "artist": "da Vinci",
+        "description": "The Weeping Woman YEP",
+        "tags": [
+            [
+                "Bar",
+                "#ff3b30"
+            ],
+            [
+                "Foo",
+                "#34c759"
+            ]
+        ],
+        "imageURLs": [
+            "https://many-voices-app-content.s3.amazonaws.com/weeping-woman/images/T05010_10.jpg"
+        ],
+        "critiques": [
+            {
+                "title": "Critique One - Weeping Woman",
+                "critic": "Dr. Andrew Salyer",
+                "transcript": "Nulla vel ante tempus, tempor arcu sit amet, elementum sem. Donec interdum erat ut quam aliquet rutrum. Cras pellentesque urna non arcu sodales, vel interdum lectus euismod.",
+                "tags": [
+                    "foo"
+                ]
+            }
+        ]
+    }
+]
