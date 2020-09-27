@@ -17,8 +17,9 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {...
 
 import MediaExpanded from './MediaExpanded';
 
-const snapTop = 192;
-const snapBottom = Dimensions.get('window').height - 108;
+const snapTop = Dimensions.get('window').height * 0.25;
+
+const snapBottom = Dimensions.get('window').height  * 0.85;
 const borderRadius = 24;
 const handlebarWidth = Dimensions.get('window').width / 5;
 
