@@ -1,14 +1,14 @@
-name: Lint
+name: Build & Lint
 
-on: 
+on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
 
 jobs:
-  run-linters:
-    name: Run linters
+  build-and-run-linter:
+    name: Build & run linter
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +25,10 @@ jobs:
         working-directory: ./mobile-app
         run: npm install
 
-      - name: Run linters
+      - name: Build proj
         working-directory: ./mobile-app
-        run: npx eslint . --ext .ts,.tsx --quiet
+        run: npm run build
+
+      - name: Run linter
+        working-directory: ./mobile-app
+        run: npm run lint
