@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '800',
     color: 'white',
-    paddingRight: 48,
+    paddingRight: 24,
   },
   subtitle: {
     fontWeight: '600',
@@ -79,6 +79,7 @@ interface Props {
     artist: string;
     imageURLs: string[];
   };
+  tagdata: string[][];
 }
 
 export interface artwork {
@@ -98,7 +99,7 @@ export const Card: React.FC<Props> = (props: Props) => (
           <Text style={styles.title}>{props.artwork.title}</Text>
           <Text style={styles.subtitle}>{props.artwork.artist}</Text>
         </View>
-        <Tag data={tagGeneric}/>
+        <Tag data={props.tagdata}/>
       </View>
     
       {/* <View style={[styles.labels, styles.row]}> */}
