@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import {Tag} from './Tag'
+import { Tag } from './Tag';
 
 // Styles
 
@@ -18,9 +18,12 @@ const deviceScreenWidth = Math.round(Dimensions.get('window').width);
 const cardWidth = Math.round(0.86 * deviceScreenWidth);
 const cardHeight = Math.round(0.71 * cardWidth);
 
-
 //Generic art tags to use until we start pulling in database information
-const tagGeneric = [["Art", '#34c759'], ["Aart", '#5ac8fa'], ["Aaart", '#ff3b30']]
+const tagGeneric = [
+  ['Art', '#34c759'],
+  ['Aart', '#5ac8fa'],
+  ['Aaart', '#ff3b30'],
+];
 
 const styles = StyleSheet.create({
   row: {
@@ -66,45 +69,34 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: '#aeaeb2',
   },
-  taglist: {
-    
-  }
+  taglist: {},
 });
 
 // Component
 
 interface Props {
-  artwork: {
-    title: string;
-    artist: string;
-    imageURLs: string[];
-  };
-  tagdata: string[][];
-}
-
-export interface artwork {
   title: string;
   artist: string;
-  imageURLs: string[];
+  backgroundImg: string;
+  tagdata: string[][];
 }
 
 export const Card: React.FC<Props> = (props: Props) => (
   <TouchableOpacity style={styles.card} activeOpacity={activeOpacity}>
     <ImageBackground
-      source={{ uri: props.artwork.imageURLs[0] }}
+      source={{ uri: props.backgroundImg }}
       style={styles.bgImg}
       imageStyle={{ borderRadius }}>
       <View style={[styles.labels, styles.row]}>
         <View style={styles.col}>
-          <Text style={styles.title}>{props.artwork.title}</Text>
-          <Text style={styles.subtitle}>{props.artwork.artist}</Text>
+          <Text style={styles.title}>{props.title}</Text>
+          <Text style={styles.subtitle}>{props.artist}</Text>
         </View>
-        <Tag data={props.tagdata}/>
+        <Tag data={props.tagdata} />
       </View>
-    
+
       {/* <View style={[styles.labels, styles.row]}> */}
       {/* </View> */}
-      
     </ImageBackground>
   </TouchableOpacity>
 );

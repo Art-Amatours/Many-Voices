@@ -69,9 +69,16 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
         )}
         {!props.isLoadingArtwork &&
           !props.didErrorOccurLoadingArtwork &&
-          props.artworkList.map((item, key) => {
-            // return <Card key={key} artwork={item} tagdata={jsonData[0].tags} />;
-            return <Text key={key}>{item.title}</Text>;
+          props.artworkList.map((artwork, key) => {
+            return (
+              <Card
+                key={key}
+                title={artwork.title}
+                artist={artwork.artist}
+                backgroundImg={artwork.imageURLs[0]}
+                tagdata={jsonData[0].tags}
+              />
+            );
           })}
       </ScrollView>
     </View>
