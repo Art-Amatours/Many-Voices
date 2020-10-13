@@ -5,8 +5,6 @@ import MediaPlayer from './components/MediaPlayer';
 import { configureStore } from './store';
 import { Provider } from 'react-redux';
 
-// A BIT OF HARDCODING TESTING HERE TOO......
-
 const store = configureStore();
 
 const App: React.FC = () => (

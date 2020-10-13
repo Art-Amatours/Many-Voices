@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import jsonData from '../../assets/artwork_format.json';
-import { Artwork } from '../store/artwork/types';
-import { Card, artwork } from '../components/Card';
+import { Card } from '../components/Card';
 import { RootState } from '../store';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SearchBar } from '../components/SearchBar';
@@ -9,8 +8,6 @@ import { Title } from '../components/Title';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
-
-// import * as jsonData from '.../assets/artwork_format.json'
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -52,8 +49,9 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 // Component.
 
 const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
-  // const artworkData : string = JSON.parse(jsonData);
-
+  // When the app first launches, reach out to the network to fetch all of the
+  // content this app will need to display, and throw it in the redux global
+  // store.
   useEffect(() => props.fetchAllArtworkFromCloud(), []);
 
   return (

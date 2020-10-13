@@ -18,13 +18,6 @@ const deviceScreenWidth = Math.round(Dimensions.get('window').width);
 const cardWidth = Math.round(0.86 * deviceScreenWidth);
 const cardHeight = Math.round(0.71 * cardWidth);
 
-//Generic art tags to use until we start pulling in database information
-const tagGeneric = [
-  ['Art', '#34c759'],
-  ['Aart', '#5ac8fa'],
-  ['Aaart', '#ff3b30'],
-];
-
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
@@ -94,9 +87,6 @@ export const Card: React.FC<Props> = (props: Props) => (
         </View>
         <Tag data={props.tagdata} />
       </View>
-
-      {/* <View style={[styles.labels, styles.row]}> */}
-      {/* </View> */}
     </ImageBackground>
   </TouchableOpacity>
 );
