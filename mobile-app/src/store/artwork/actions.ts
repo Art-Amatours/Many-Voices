@@ -4,6 +4,7 @@ import {
   Artwork,
   ArtworkActionTypes,
   SET_LOADING_ERROR,
+  SET_SEARCH_QUERY,
   FETCH_ALL_ARTWORK_FROM_CLOUD,
 } from './types';
 
@@ -11,6 +12,13 @@ import {
 export function setLoadingError(to: boolean): ArtworkActionTypes {
   return {
     type: SET_LOADING_ERROR,
+    payload: to,
+  };
+}
+
+export function setSearchQuery(to: string): ArtworkActionTypes {
+  return {
+    type: SET_SEARCH_QUERY,
     payload: to,
   };
 }
