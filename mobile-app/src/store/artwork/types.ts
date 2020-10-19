@@ -2,7 +2,7 @@ export interface Artwork {
   title: string;
   artist: string;
   description: string;
-  tags: string[];
+  tags: string[][];
   imageURLs: string[];
   critiques: Critique[];
 }
