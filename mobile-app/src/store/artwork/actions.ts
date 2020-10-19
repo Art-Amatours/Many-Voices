@@ -1,0 +1,47 @@
+import { AppThunk } from '..';
+import { Dispatch } from 'redux';
+import {
+  Artwork,
+  ArtworkActionTypes,
+  SET_LOADING_ERROR,
+  FETCH_ALL_ARTWORK_FROM_CLOUD,
+} from './types';
+
+// Action creator for the SET_LOADING_ERROR action type.
+export function setLoadingError(to: boolean): ArtworkActionTypes {
+  return {
+    type: SET_LOADING_ERROR,
+    payload: to,
+  };
+}
+
+// Action creator used by the fetchAllArtworkFromCloud() func.
+function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
+  return {
+    type: FETCH_ALL_ARTWORK_FROM_CLOUD,
+    payload: artwork,
+  };
+}
+
+// Thunk which makes an HTTP API call, then calls an action creator and dispatches that action
+// depending on the response from that API call.
+export function fetchAllArtworkFromCloud(host: string): AppThunk {
+  return (dispatch: Dispatch<ArtworkActionTypes>): void => {
+    fetch(`${host}/bucketContents`)
+      .then((response) =>
+        response.json().then((json) => ({
+          status: response.status,
+          json,
+        })),
+      )
+      .then(({ status, json }) => {
+        // TODO: more explicit error handling of different status codes.
+        if (status >= 400) {
+          dispatch(setLoadingError(true));
+        } else {
+          dispatch(addAllArtworkFromCloud(json));
+        }
+      })
+      .catch((err) => console.error(err)); // TODO: better error handling.
+  };
+}
