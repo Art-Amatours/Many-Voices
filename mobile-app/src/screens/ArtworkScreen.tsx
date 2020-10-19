@@ -96,7 +96,7 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
 };
 
 function tagContains(tags: string[][], searchQuery: string): boolean {
-  let contains: boolean = false;
+  let contains = false;
   tags.forEach((element) => {
     contains = element[0].includes(searchQuery) || contains;
   });
