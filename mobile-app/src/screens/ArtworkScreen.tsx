@@ -8,13 +8,17 @@ import { Title } from '../components/Title';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
+import Constants from 'expo-constants';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
 // This env var will exist on an expo react native app, so it's safe to suppress this warning.
 // eslint-disable-next-line no-undef
 if (__DEV__) {
-  host = 'http://128.61.105.40:6969';
+  const { manifest } = Constants;
+  host =
+    'http://' + manifest.debuggerHost?.split(':').shift()?.concat(':6969') ??
+    ''; // Fallback will break, but we shouldn't ever have to rely on it.
 } else {
   host = 'public-address-for-some-remote-box';
 }
