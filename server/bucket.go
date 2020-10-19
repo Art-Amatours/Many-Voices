@@ -76,7 +76,7 @@ type ArtworkInfo struct {
 	Title       string          `json:"title"`
 	Artist      string          `json:"artist"`
 	Description string          `json:"description"`
-	Tags        []string        `json:"tags"`
+	Tags        [][]string        `json:"tags"`
 	ImageURLs   []string        `json:"imageURLs"`
 	Critiques   []*CritiqueInfo `json:"critiques"`
 }
@@ -118,7 +118,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// The cur object is a top-level directory. Create a new ArtworkInfo object in
 			// artworkList for the artwork that this directory represents.
 			newArtworkInfoObj := ArtworkInfo{
-				Tags:      make([]string, 0),
+				Tags:      make([][]string, 0),
 				ImageURLs: make([]string, 0),
 			}
 			artworkList = append(artworkList, &newArtworkInfoObj)
