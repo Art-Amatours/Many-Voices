@@ -76,7 +76,7 @@ type ArtworkInfo struct {
 	Title       string          `json:"title"`
 	Artist      string          `json:"artist"`
 	Description string          `json:"description"`
-	Tags        [][]string        `json:"tags"`
+	Tags        [][]string      `json:"tags"`
 	ImageURLs   []string        `json:"imageURLs"`
 	Critiques   []*CritiqueInfo `json:"critiques"`
 }
