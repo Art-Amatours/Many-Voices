@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import jsonData from '../../assets/artwork_format.json';
 import { Card } from '../components/Card';
 import { RootState } from '../store';
 import { ScrollView } from 'react-native-gesture-handler';
