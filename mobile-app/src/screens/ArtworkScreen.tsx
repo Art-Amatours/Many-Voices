@@ -62,7 +62,7 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   return (
     <View style={styles.container}>
       <Title text="Artwork Screen" />
-      <SearchBar/>
+      <SearchBar />
       <ScrollView
         contentContainerStyle={styles.gallery}
         showsVerticalScrollIndicator={false}>
@@ -73,7 +73,11 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
         {!props.isLoadingArtwork &&
           !props.didErrorOccurLoadingArtwork &&
           props.artworkList.map((artwork, key) => {
-            if ( props.search == null || artwork.title.includes(props.search) || tagContains(artwork.tags, props.search)) {
+            if (
+              props.search == null ||
+              artwork.title.includes(props.search) ||
+              tagContains(artwork.tags, props.search)
+            ) {
               return (
                 <Card
                   key={key}
@@ -92,12 +96,12 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   );
 };
 
-function tagContains(tags: string[][], searchQuery : string) : boolean  {
-  let contains : boolean = false;
-  tags.forEach(element => {
+function tagContains(tags: string[][], searchQuery: string): boolean {
+  let contains: boolean = false;
+  tags.forEach((element) => {
     contains = element[0].includes(searchQuery) || contains;
   });
   return contains;
-};
+}
 
 export default connector(ArtworkScreen);
