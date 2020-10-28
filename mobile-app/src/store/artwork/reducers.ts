@@ -3,12 +3,14 @@ import {
   ArtworkActionTypes,
   FETCH_ALL_ARTWORK_FROM_CLOUD,
   SET_LOADING_ERROR,
+  SET_SEARCH_QUERY,
 } from './types';
 
 const initialState: ArtworkState = {
   list: [],
   isLoading: true,
   isError: false,
+  searchQuery: "",
 };
 
 export default function artworkReducer(
@@ -28,6 +30,11 @@ export default function artworkReducer(
         ...state,
         isLoading: false,
         isError: action.payload,
+      };
+    case SET_SEARCH_QUERY:
+      return {
+        ...state,
+        searchQuery: action.payload,
       };
     default:
       return state;
