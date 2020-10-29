@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Dimensions,
   ImageBackground,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 
 import { Tag } from './Tag';
+import * as RootNavigation from '../navigation/RootNavigation'
 
 // Styles
 
@@ -75,7 +77,11 @@ interface Props {
 }
 
 export const Card: React.FC<Props> = (props: Props) => (
-  <TouchableOpacity style={styles.card} activeOpacity={activeOpacity}>
+  <TouchableOpacity 
+    onPress={() => {
+      RootNavigation.navigate("Details")
+    }}
+    style={styles.card} activeOpacity={activeOpacity}>
     <ImageBackground
       source={{ uri: props.backgroundImg }}
       style={styles.bgImg}
