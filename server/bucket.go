@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -84,11 +83,11 @@ type ArtworkInfo struct {
 // CritiqueInfo describes information about each audio critique associated with
 // one artwork.
 type CritiqueInfo struct {
-	Title      string   `json:"title"`
-	Critic     string   `json:"critic"`
-	Transcript string   `json:"transcript"`
-	Tags       []string `json:"tags"`
-	// AudioURL   string   `json:"audioURL`
+	Title      string   	`json:"title"`
+	Critic     string   	`json:"critic"`
+	Transcript string   	`json:"transcript"`
+	Tags       [][]string 	`json:"tags"`
+	AudioURL   string   	`json:"audioURL`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.
@@ -133,7 +132,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// the corresponding ArtworkInfo struct's artworkList for the critique that this
 			// subdirectory represents.
 			newCritiqueInfoObj := CritiqueInfo{
-				Tags: make([]string, 0),
+				Tags: make([][]string, 0),
 			}
 			artworkList[curArtworkIndex].Critiques = append(artworkList[curArtworkIndex].Critiques, &newCritiqueInfoObj)
 			curCritiqueIndexes[curArtworkIndex]++
@@ -168,12 +167,14 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 		if *object.Size > 0 && b.critiquesSubDirRegexp.MatchString(*object.Key) && b.fileExtRegexp.FindString(*object.Key) == ".json" {
 			// Construct public URL for the object.
 			objectURL := bucketURLPrefix + b.name + bucketURLSuffix + *object.Key
-
+			
+			// Add audioURL for critique
+			audioURL := bucketURLPrefix + b.name + bucketURLSuffix + (strings.Replace(*object.Key, ".json", ".mp3", 1))
 			critiqueList := artworkList[curArtworkIndex].Critiques
 			// Download the .json file for the current critique and store its contents in the
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
-			go addCritiqueInfo(objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], &wg, errChan)
+			go addCritiqueInfo(objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], audioURL, &wg, errChan)
 
 			continue
 		}
@@ -252,6 +253,7 @@ func addCritiqueInfo(
 	fileURL string,
 	critiqueList []*CritiqueInfo,
 	curCritiqueIndex int,
+	audioURL string, 
 	wg *sync.WaitGroup,
 	errChan chan error,
 ) {
@@ -282,6 +284,7 @@ func addCritiqueInfo(
 	curCritiqueInfoObj.Title = bodyAsObj.Title
 	curCritiqueInfoObj.Critic = bodyAsObj.Critic
 	curCritiqueInfoObj.Transcript = bodyAsObj.Transcript
+	curCritiqueInfoObj.AudioURL = audioURL
 	curCritiqueInfoObj.Tags = bodyAsObj.Tags
 }
 
