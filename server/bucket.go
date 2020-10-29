@@ -83,11 +83,11 @@ type ArtworkInfo struct {
 // CritiqueInfo describes information about each audio critique associated with
 // one artwork.
 type CritiqueInfo struct {
-	Title      string   `json:"title"`
-	Critic     string   `json:"critic"`
-	Transcript string   `json:"transcript"`
-	Tags       []string `json:"tags"`
-	AudioURL   string   `json:"audioURL`
+	Title      string   	`json:"title"`
+	Critic     string   	`json:"critic"`
+	Transcript string   	`json:"transcript"`
+	Tags       [][]string 	`json:"tags"`
+	AudioURL   string   	`json:"audioURL`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.
@@ -132,7 +132,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// the corresponding ArtworkInfo struct's artworkList for the critique that this
 			// subdirectory represents.
 			newCritiqueInfoObj := CritiqueInfo{
-				Tags: make([]string, 0),
+				Tags: make([][]string, 0),
 			}
 			artworkList[curArtworkIndex].Critiques = append(artworkList[curArtworkIndex].Critiques, &newCritiqueInfoObj)
 			curCritiqueIndexes[curArtworkIndex]++
