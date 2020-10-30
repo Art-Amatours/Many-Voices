@@ -9,6 +9,7 @@ import {
   SET_CURRENT_ARTWORK,
   Critique,
   SET_CURRENT_CRITIQUE,
+  SET_IS_PAUSED,
 } from './types';
 
 // Action creator for the SET_LOADING_ERROR action type.
@@ -36,6 +37,12 @@ export function setCurrentArtwork(to: Artwork): ArtworkActionTypes {
 export function setCurrentCritique(to: Critique): ArtworkActionTypes {
   return {
     type: SET_CURRENT_CRITIQUE,
+    payload: to,
+  };
+}
+export function setIsPaused(to: boolean): ArtworkActionTypes {
+  return {
+    type: SET_IS_PAUSED,
     payload: to,
   };
 }

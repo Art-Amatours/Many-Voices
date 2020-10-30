@@ -11,7 +11,7 @@ const App: React.FC = () => (
   <Provider store={store}>
     <StatusBar barStyle="dark-content" />
     <AppNavigator />
-    <MediaPlayer mediaTitle="Song Title" />
+    <MediaPlayer/>
   </Provider>
 );
 

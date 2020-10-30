@@ -12,6 +12,7 @@ import {
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {... , PanGestureHandler }
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../store';
+import { setIsPaused } from '../store/artwork/actions';
 
 // import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
@@ -121,8 +122,10 @@ const styles = StyleSheet.create({
   const mapState = (state: RootState) => ({
     critique: state.artwork.currentCritique,
     isPlaying: state.artwork.isPlaying,
+    isPaused: state.artwork.isPaused,
   });
   const mapDispatch = {
+    setIsPaused: (isPaused: boolean) => setIsPaused(isPaused),
     // setCurrentCritique: (critique: Critique) => setCurrentCritique(critique),
   };
   const connector = connect(mapState, mapDispatch);
@@ -132,7 +135,7 @@ const styles = StyleSheet.create({
     const [up, setUp] = useState(false);
     const pos = useRef(new Animated.Value(snapBottom)).current;
     // const playpause = (arg1: boolean) => {arg1 = !arg1};
-    const [paused, setPaused] = useState(false);
+    // const [paused, setPaused] = useState(false);
 
     const handlebarTapHandler = () => {
         if (up) {
@@ -155,12 +158,12 @@ const styles = StyleSheet.create({
     };
 
     let playpause;
-    if (paused) {
+    if (props.isPaused) {
         playpause = (
         <TouchableOpacity
             style={styles.play}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress= {() => setPaused(false)}
+            onPress= {() => props.setIsPaused(false)}
         />
         );
     } else {
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
         <TouchableOpacity
             style={styles.pause}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress={() => setPaused(true)}
+            onPress={() => props.setIsPaused(true)}
         />
         );
     }
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
     }
 }
 
-export default MediaPlayer;
+export default connector(MediaPlayer);
 // const mapStateToProps = (state) => {
 //   const { mediaTitle, paused } = state.media;
 //   return { mediaTitle, paused };

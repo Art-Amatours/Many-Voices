@@ -6,8 +6,9 @@ import {
   SET_SEARCH_QUERY,
   SET_CURRENT_ARTWORK,
   SET_CURRENT_CRITIQUE,
+  SET_IS_PAUSED,
 } from './types';
-import { Artwork, Critique } from 'types'
+// import { Artwork, Critique } from './types'
 
 const initialState: ArtworkState = {
   list: [],
@@ -30,6 +31,7 @@ const initialState: ArtworkState = {
     AudioURL: "",
   },
   isPlaying: false,
+  isPaused: true,
 };
 
 export default function artworkReducer(
@@ -65,6 +67,11 @@ export default function artworkReducer(
         ...state,
         currentCritique: action.payload,
         isPlaying: true,
+      }
+    case SET_IS_PAUSED:
+      return {
+        ...state,
+        isPaused: action.payload,
       }
     default:
       return state;
