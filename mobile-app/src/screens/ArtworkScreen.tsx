@@ -9,8 +9,15 @@ import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud, setCurrentArtwork } from '../store/artwork/actions';
 import Constants from 'expo-constants';
 import { Artwork, SET_CURRENT_ARTWORK } from '../store/artwork/types';
-import { ArtworkActionTypes } from '../store/artwork/types'
-import * as RootNavigation from '../navigation/RootNavigation'
+import { ArtworkActionTypes } from '../store/artwork/types';
+import * as RootNavigation from '../navigation/RootNavigation';
+
+
+
+
+
+
+
 
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
@@ -25,6 +32,11 @@ if (__DEV__) {
 } else {
   host = 'public-address-for-some-remote-box';
 }
+
+
+
+
+
 
 // Styles.
 
@@ -63,6 +75,8 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   // store.
   useEffect(() => props.fetchAllArtworkFromCloud(), []);
 
+  
+  
   return (
     <View style={styles.container}>
       <Title text="Artwork Screen" />

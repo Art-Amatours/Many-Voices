@@ -8,14 +8,41 @@ import {
   View,
 } from 'react-native';
 import { ArtworkActionTypes, Critique } from '../store/artwork/types';
+import { setIsPaused, setCurrentSound } from '../store/artwork/actions';
 
 import { Tag } from './Tag';
+import { Audio } from 'expo-av'
 
 // Styles
 export interface Props {
     critique: Critique
     setCritique: (critique: Critique) => ArtworkActionTypes
+    setCurrentSound: (currentSound: Audio.Sound) => ArtworkActionTypes
+    setIsPaused: (isPaused: boolean) => ArtworkActionTypes
+    currentSound: Audio.Sound
 }
+
+
+async function playAudio(url: string, currentSound: Audio.Sound, setCurrentSound: (Sound: Audio.Sound) => ArtworkActionTypes) {
+  try {
+    currentSound.unloadAsync();
+    const { sound } = await Audio.Sound.createAsync(
+      {uri:url} ,
+      {
+        shouldPlay: true,
+        isLooping: false,
+    });
+    setCurrentSound(sound);
+
+  } catch (error) {
+    console.log("Oh noooooooooooo");
+  } 
+}
+
+
+
+
+
 
 const activeOpacity = 0.8;
 const borderRadius = 18;
@@ -79,7 +106,12 @@ export const CritiqueComponent: React.FC<Props> = (props: Props) => (
     <>
     <TouchableOpacity
       style={[styles.container, styles.row]}
-      onPress={() => props.setCritique(props.critique)}
+      onPress={() => {
+        props.setIsPaused(true);
+        props.setCritique(props.critique);
+        playAudio(props.critique.AudioURL, props.currentSound, props.setCurrentSound)
+        }
+      }
     >
       <View style={[styles.col, { alignItems: 'stretch' }]}>
         <Text style={styles.title}>{ props.critique.title }</Text>

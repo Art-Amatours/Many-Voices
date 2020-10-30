@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../store';
-import { setCurrentCritique } from '../store/artwork/actions'
+import { setCurrentCritique, setCurrentSound, setIsPaused } from '../store/artwork/actions'
 
 import CritiqueComponent from '../components/CritiqueComponent';
 import { Critique } from '../store/artwork/types'
+import { Audio } from 'expo-av'
 
 const styles = StyleSheet.create({
   container: {
@@ -40,9 +41,14 @@ const styles = StyleSheet.create({
 
 const mapState = (state: RootState) => ({
   artwork: state.artwork.currentArtwork,
+  currentSound: state.artwork.currentSound,
+  
 });
 const mapDispatch = {
   setCurrentCritique: (critique: Critique) => setCurrentCritique(critique),
+  setCurrentSound: (currentSound: Audio.Sound) => setCurrentSound(currentSound),
+  setIsPaused: (isPaused: boolean) => setIsPaused(isPaused),
+
 };
 const connector = connect(mapState, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -79,6 +85,9 @@ const DetailsScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               <CritiqueComponent
                 critique = { critique }
                 setCritique = { props.setCurrentCritique }
+                setCurrentSound = { props.setCurrentSound }
+                currentSound = { props.currentSound }
+                setIsPaused = { props.setIsPaused }
                 key = { key }
               />
             )
