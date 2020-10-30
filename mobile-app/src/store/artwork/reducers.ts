@@ -1,3 +1,4 @@
+import { Audio } from 'expo-av'
 import {
   ArtworkState,
   ArtworkActionTypes,
@@ -7,6 +8,7 @@ import {
   SET_CURRENT_ARTWORK,
   SET_CURRENT_CRITIQUE,
   SET_IS_PAUSED,
+  SET_CURRENT_SOUND,
 } from './types';
 // import { Artwork, Critique } from './types'
 
@@ -32,6 +34,7 @@ const initialState: ArtworkState = {
   },
   isPlaying: false,
   isPaused: true,
+  currentSound: new Audio.Sound(),
 };
 
 export default function artworkReducer(
@@ -72,6 +75,11 @@ export default function artworkReducer(
       return {
         ...state,
         isPaused: action.payload,
+      }
+    case SET_CURRENT_SOUND:
+        return {
+          ...state,
+          currentSound: action.payload,
       }
     default:
       return state;

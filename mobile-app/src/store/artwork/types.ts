@@ -1,3 +1,5 @@
+import { Audio } from 'expo-av'
+
 export interface Artwork {
   title: string;
   artist: string;
@@ -24,6 +26,7 @@ export interface ArtworkState {
   searchQuery: string;
   isPlaying: boolean;
   isPaused: boolean;
+  currentSound: Audio.Sound;
 }
 
 export const FETCH_ALL_ARTWORK_FROM_CLOUD = 'ADD_ALL_ARTWORK_FROM_CLOUD';
@@ -32,6 +35,7 @@ export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 export const SET_CURRENT_ARTWORK = 'SET_CURRENT_ARTWORK';
 export const SET_CURRENT_CRITIQUE = 'SET_CURRENT_CRITIQUE';
 export const SET_IS_PAUSED = 'SET_IS_PAUSED';
+export const SET_CURRENT_SOUND = 'SET_CURRENT_SOUND';
 
 interface AddAllArtworkAction {
   type: typeof FETCH_ALL_ARTWORK_FROM_CLOUD;
@@ -57,4 +61,8 @@ interface SetIsPaused {
   type: typeof SET_IS_PAUSED;
   payload: boolean;
 }
-export type ArtworkActionTypes = AddAllArtworkAction | SetErrorFromFetchAction | SetSearchQueryFromFetchAction | SetCurrentArtwork | SetCurrentCritique | SetIsPaused;
+interface SetCurrentSound {
+  type: typeof SET_CURRENT_SOUND;
+  payload: Audio.Sound;
+}
+export type ArtworkActionTypes = AddAllArtworkAction | SetErrorFromFetchAction | SetSearchQueryFromFetchAction | SetCurrentArtwork | SetCurrentCritique | SetIsPaused | SetCurrentSound;

@@ -1,5 +1,6 @@
 import { AppThunk } from '..';
 import { Dispatch } from 'redux';
+import { Audio } from 'expo-av';
 import {
   Artwork,
   ArtworkActionTypes,
@@ -10,6 +11,7 @@ import {
   Critique,
   SET_CURRENT_CRITIQUE,
   SET_IS_PAUSED,
+  SET_CURRENT_SOUND,
 } from './types';
 
 // Action creator for the SET_LOADING_ERROR action type.
@@ -46,6 +48,13 @@ export function setIsPaused(to: boolean): ArtworkActionTypes {
     payload: to,
   };
 }
+export function setCurrentSound(to: Audio.Sound): ArtworkActionTypes {
+  return {
+    type: SET_CURRENT_SOUND,
+    payload: to,
+  };
+}
+
 // Action creator used by the fetchAllArtworkFromCloud() func.
 function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
   return {

@@ -12,7 +12,8 @@ import {
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {... , PanGestureHandler }
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../store';
-import { setIsPaused } from '../store/artwork/actions';
+import { setIsPaused, setCurrentSound } from '../store/artwork/actions';
+import { ArtworkActionTypes } from '../store/artwork/types';
 
 // import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
@@ -24,20 +25,18 @@ import MediaExpanded from './MediaExpanded';
 *  TRACK PLAYING SET UP
 */
 import { Audio } from 'expo-av'
-const audio = new Audio.Sound();
+import { RECORDING_OPTION_IOS_OUTPUT_FORMAT_APPLELOSSLESS } from 'expo-av/build/Audio';
 
-async function playAudio(url: string) {
-  try {
-    const { sound } = await Audio.Sound.createAsync(
-      {uri:url} ,
-      {
-        shouldPlay: true,
-        isLooping: true,
-    });
-  } catch (error) {
-    console.log("Oh noooooooooooo");
-  } 
+
+
+async function play(currentSound: Audio.Sound) {
+  currentSound.playAsync();
 }
+
+async function pause(currentSound: Audio.Sound) {
+  currentSound.pauseAsync();
+}
+
 
 
 
@@ -144,9 +143,11 @@ const styles = StyleSheet.create({
     critique: state.artwork.currentCritique,
     isPlaying: state.artwork.isPlaying,
     isPaused: state.artwork.isPaused,
+    currentSound: state.artwork.currentSound,
   });
   const mapDispatch = {
     setIsPaused: (isPaused: boolean) => setIsPaused(isPaused),
+    setCurrentSound: (currentSound: Audio.Sound) => setCurrentSound(currentSound),
     // setCurrentCritique: (critique: Critique) => setCurrentCritique(critique),
   };
   const connector = connect(mapState, mapDispatch);
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
             onPress= {() => 
               {
                 props.setIsPaused(false)
-                playAudio('https://many-voices-app-content.s3.amazonaws.com/weeping-woman/critiques/critique-one/weeping-woman-critique-one.mp3')
+                play(props.currentSound)
 
               }
             }
@@ -198,8 +199,13 @@ const styles = StyleSheet.create({
         <TouchableOpacity
             style={styles.pause}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress={() => props.setIsPaused(true)}
-            p
+            onPress={() => 
+              {
+                props.setIsPaused(true);
+                pause(props.currentSound);
+              }
+            }
+            
             
         />
         );
