@@ -107,7 +107,7 @@ export const CritiqueComponent: React.FC<Props> = (props: Props) => (
     <TouchableOpacity
       style={[styles.container, styles.row]}
       onPress={() => {
-        props.setIsPaused(true);
+        props.setIsPaused(false);
         props.setCritique(props.critique);
         playAudio(props.critique.AudioURL, props.currentSound, props.setCurrentSound)
         }
