@@ -13,8 +13,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {...
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../store';
 import { setIsPaused, setCurrentSound } from '../store/artwork/actions';
-import { ArtworkActionTypes } from '../store/artwork/types';
-
+// import { ArtworkActionTypes } from '../store/artwork/types';
 // import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 // import { actionCreators as actions } from '../actions/media';
@@ -25,7 +24,7 @@ import MediaExpanded from './MediaExpanded';
 *  TRACK PLAYING SET UP
 */
 import { Audio } from 'expo-av'
-import { RECORDING_OPTION_IOS_OUTPUT_FORMAT_APPLELOSSLESS } from 'expo-av/build/Audio';
+// import { RECORDING_OPTION_IOS_OUTPUT_FORMAT_APPLELOSSLESS } from 'expo-av/build/Audio';
 
 
 
@@ -232,9 +231,7 @@ const styles = StyleSheet.create({
             </View>
             </View>
             <View style={[{ opacity: up ? 1 : 0 }, styles.expanded]}>
-            <MediaExpanded playing={true} 
-                transcript="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et augue quis neque iaculis auctor. Nulla tincidunt magna tincidunt odio facilisis, nec aliquet nunc laoreet. Cras tincidunt egestas urna, ut dignissim turpis porttitor sit amet. Morbi vitae scelerisque ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a dui et dolor feugiat dapibus. Phasellus nec ullamcorper ex. Quisque mi magna, viverra et semper id, dictum a sapien. Nulla iaculis sollicitudin velit, a ultricies metus lacinia nec. Phasellus vitae elit cursus, dictum nibh in, convallis orci. Sed id faucibus felis. Ut eu mi ut ante ullamcorper faucibus vel vel enim."
-            />
+            <MediaExpanded/>
             </View>
         </SafeAreaView>
         </Animated.View>

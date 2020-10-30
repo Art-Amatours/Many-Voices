@@ -6,8 +6,8 @@ import {
   Text,
   View,
 } from 'react-native';
-
-// import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { RootState } from '../store';
 
 const circleDim = Dimensions.get('window').width / 24;
 const styles = StyleSheet.create({
@@ -56,14 +56,31 @@ const styles = StyleSheet.create({
     },
   });
 
-  interface Props {
-      playing: boolean,
-      transcript: string,
-  }
+  // interface Props {
+  //     playing: boolean,
+  //     transcript: string,
+  // }
 
-  const MediaExpanded: React.FC<Props> = (props: Props) => {
+  // Redux goodness.
+
+  const mapState = (state: RootState) => ({
+    critique: state.artwork.currentCritique,
+    isPlaying: state.artwork.isPlaying,
+    // isPaused: state.artwork.isPaused,
+    // currentSound: state.artwork.currentSound,
+  });
+  const mapDispatch = {
+    // setIsPaused: (isPaused: boolean) => setIsPaused(isPaused),
+    // setCurrentSound: (currentSound: Audio.Sound) => setCurrentSound(currentSound),
+    // setCurrentCritique: (critique: Critique) => setCurrentCritique(critique),
+  };
+  const connector = connect(mapState, mapDispatch);
+  type PropsFromRedux = ConnectedProps<typeof connector>;
+
+
+  const MediaExpanded: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
     let content;
-    if (props.playing) {
+    if (props.isPlaying) {
         content = (
           <>
             <View style={[styles.container, styles.col]}>
@@ -78,7 +95,7 @@ const styles = StyleSheet.create({
               </View>
             </View>
             <ScrollView>
-              <Text style={styles.transcript}>{ props.transcript }</Text>
+              <Text style={styles.transcript}>{ props.critique.transcript }</Text>
               <View style={styles.dummyPadding} />
             </ScrollView>
           </>
@@ -98,4 +115,4 @@ const styles = StyleSheet.create({
       );
     }
 
-    export default MediaExpanded;
+    export default connector(MediaExpanded);
