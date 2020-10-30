@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Dimensions,
   ImageBackground,
@@ -9,6 +10,13 @@ import {
 } from 'react-native';
 
 import { Tag } from './Tag';
+import * as RootNavigation from '../navigation/RootNavigation'
+
+import { connect, ConnectedProps } from 'react-redux';
+import { RootState } from '../store';
+import { setCurrentArtwork} from '../store/artwork/actions';
+import { Artwork, ArtworkActionTypes } from '../store/artwork/types';
+
 
 // Styles
 
@@ -65,27 +73,40 @@ const styles = StyleSheet.create({
   taglist: {},
 });
 
+// Redux goodness.
+
+// const mapState = (props: Props) => ({
+//   artwork: props.artwork
+// });
+// const mapDispatch = {
+//   setArtwork: (artwork: Artwork) => setCurrentArtwork(artwork),
+// };
+// const connector = connect(mapState, mapDispatch);
+// type PropsFromRedux = ConnectedProps<typeof connector>;
+
 // Component
-
-interface Props {
-  title: string;
-  artist: string;
-  backgroundImg: string;
-  tagdata: string[][];
+export interface Props {
+  artwork: Artwork,
+  setArtwork : (artwork: Artwork) => ArtworkActionTypes,
 }
-
 export const Card: React.FC<Props> = (props: Props) => (
-  <TouchableOpacity style={styles.card} activeOpacity={activeOpacity}>
+  <TouchableOpacity 
+    onPress={() => {
+      // reduxProps.setCurrentArtwork(props.artwork);
+      props.setArtwork(props.artwork);
+      RootNavigation.navigate("Details");
+    }}
+    style={styles.card} activeOpacity={activeOpacity}>
     <ImageBackground
-      source={{ uri: props.backgroundImg }}
+      source={{ uri: props.artwork.imageURLs[0]}}
       style={styles.bgImg}
       imageStyle={{ borderRadius }}>
       <View style={[styles.labels, styles.row]}>
         <View style={styles.col}>
-          <Text style={styles.title}>{props.title}</Text>
-          <Text style={styles.subtitle}>{props.artist}</Text>
+          <Text style={styles.title}>{props.artwork.title}</Text>
+          <Text style={styles.subtitle}>{props.artwork.artist}</Text>
         </View>
-        <Tag data={props.tagdata} />
+        <Tag data={props.artwork.tags} />
       </View>
     </ImageBackground>
   </TouchableOpacity>
