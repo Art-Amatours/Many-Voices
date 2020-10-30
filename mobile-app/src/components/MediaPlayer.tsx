@@ -10,6 +10,8 @@ import {
   View,
 } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'; // {... , PanGestureHandler }
+import { connect, ConnectedProps } from 'react-redux';
+import { RootState } from '../store';
 
 // import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
@@ -109,12 +111,24 @@ const styles = StyleSheet.create({
     },
   });
 
-  interface Props {
-      mediaTitle: string,
-      // playpause(arg1: boolean) : any; 
-  }
+  // interface Props {
+  //     mediaTitle: string,
+  //     // playpause(arg1: boolean) : any; 
+  // }
 
-  const MediaPlayer: React.FC<Props> = (props: Props) => {
+  // Redux goodness.
+
+  const mapState = (state: RootState) => ({
+    critique: state.artwork.currentCritique,
+    isPlaying: state.artwork.isPlaying,
+  });
+  const mapDispatch = {
+    // setCurrentCritique: (critique: Critique) => setCurrentCritique(critique),
+  };
+  const connector = connect(mapState, mapDispatch);
+  type PropsFromRedux = ConnectedProps<typeof connector>;
+
+  const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
     const [up, setUp] = useState(false);
     const pos = useRef(new Animated.Value(snapBottom)).current;
     // const playpause = (arg1: boolean) => {arg1 = !arg1};
@@ -158,7 +172,7 @@ const styles = StyleSheet.create({
         />
         );
     }
-
+    if (props.isPlaying) {
     return (
         <Animated.View style={[{ top: pos }, styles.container]}>
         <TouchableWithoutFeedback
@@ -170,8 +184,8 @@ const styles = StyleSheet.create({
         <SafeAreaView style={[styles.col, styles.mainInfoWrapper]}>
             <View style={styles.row}>
             <View style={styles.col}>
-                <Text style={styles.title}>{ props.mediaTitle }</Text>
-                <Text style={styles.subtitle}>name - occupation</Text>
+                <Text style={styles.title}>{ props.critique.title }</Text>
+                <Text style={styles.subtitle}> { props.critique.critic }</Text>
             </View>
             <View style={styles.row}>
                 <TouchableOpacity style={styles.skip} />
@@ -187,6 +201,10 @@ const styles = StyleSheet.create({
         </SafeAreaView>
         </Animated.View>
     );
+    }
+    else {
+      return <></>
+    }
 }
 
 export default MediaPlayer;

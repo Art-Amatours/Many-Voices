@@ -5,9 +5,14 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
+import { connect, ConnectedProps } from 'react-redux';
+import { RootState } from '../store';
+import { setCurrentCritique } from '../store/artwork/actions'
 
-import Critique from '../components/Critique';
+import CritiqueComponent from '../components/CritiqueComponent';
+import { Critique } from '../store/artwork/types'
 
 const styles = StyleSheet.create({
   container: {
@@ -23,15 +28,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export interface Props {
-  title: string;
-  artist: string;
-  imageURLs: string[];
-  subtitle : string,
-  content : string
-}
+// export interface Props {
+//   title: string;
+//   artist: string;
+//   imageURLs: string[];
+//   subtitle : string,
+//   content : string
+// }
 
-const DetailsScreen: React.FC<Props> = (props: Props) => {
+// Redux goodness.
+
+const mapState = (state: RootState) => ({
+  artwork: state.artwork.currentArtwork,
+});
+const mapDispatch = {
+  setCurrentCritique: (critique: Critique) => setCurrentCritique(critique),
+};
+const connector = connect(mapState, mapDispatch);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const DetailsScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
 //   useLayoutEffect(() => {
 //     props.navigation.setOptions({
 //       headerRight: () => (
@@ -52,63 +68,32 @@ const DetailsScreen: React.FC<Props> = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: props.imageURLs[0]}}
+      { <Image
+        source={{ uri: props.artwork.imageURLs[0]}}
         style={styles.img}
-      />
+      /> }
       <ScrollView>
-        <Critique
+        {
+          props.artwork.critiques.map((critique, key) => {
+            return (
+              <CritiqueComponent
+                critique = { critique }
+                setCritique = { props.setCurrentCritique }
+                key = { key }
+              />
+            )
+          })
+        /* <CritiqueComponent
           title="Critique One"
           subtitle="name - occupation"
           duration="1:10"
           tags={['#tag1', '#tag2']}
-        />
-        <Critique
-          title="Critique Two"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={['#tag1']}
-        />
-        <Critique
-          title="Critique Three"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={[]}
-        />
-        <Critique
-          title="Critique Four"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={['#tag1']}
-        />
-        <Critique
-          title="Critique Five"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={['#tag1']}
-        />
-        <Critique
-          title="Critique Six"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={['#tag1', '#tag2', '#tag3']}
-        />
-        <Critique
-          title="Critique Seven"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={[]}
-        />
-        <Critique
-          title="Critique Eight"
-          subtitle="name - occupation"
-          duration="1:10"
-          tags={['#tag1']}
-        />
+        />*/
+        }
       </ScrollView>
       <View style={styles.dummyPaddingBottom} />
     </View>
   );
 }
 
-export default DetailsScreen;
+export default connector(DetailsScreen);

@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
 import { Card } from '../components/Card';
 import { RootState } from '../store';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SearchBar from '../components/SearchBar';
 import { Title } from '../components/Title';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
-import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
+import { fetchAllArtworkFromCloud, setCurrentArtwork } from '../store/artwork/actions';
 import Constants from 'expo-constants';
+import { Artwork, SET_CURRENT_ARTWORK } from '../store/artwork/types';
+import { ArtworkActionTypes } from '../store/artwork/types'
+import * as RootNavigation from '../navigation/RootNavigation'
+
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -46,6 +50,7 @@ const mapState = (state: RootState) => ({
 });
 const mapDispatch = {
   fetchAllArtworkFromCloud: () => fetchAllArtworkFromCloud(host),
+  setCurrentArtwork: (artwork: Artwork) => setCurrentArtwork(artwork),
 };
 const connector = connect(mapState, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -78,13 +83,17 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               tagContains(artwork.tags, props.search)
             ) {
               return (
-                <Card
-                  key={key}
-                  title={artwork.title}
-                  artist={artwork.artist}
-                  backgroundImg={artwork.imageURLs[0]}
-                  tagdata={artwork.tags}
-                />
+                // <TouchableOpacity
+                //   onPress = { () => { 
+                //     props.setCurrentArtwork(artwork);
+                //     RootNavigation.navigate("Details");
+                //   }}>
+                  <Card
+                    artwork = { artwork }
+                    setArtwork = {props.setCurrentArtwork}
+                    key = { key }
+                  />
+                // </TouchableOpacity>
               );
             } else {
               return null;
@@ -94,6 +103,10 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
     </View>
   );
 };
+
+// function placeHolder(artwork: Artwork) : ArtworkActionTypes {
+//   return setCurrentArtwork(artwork);
+// }
 
 function tagContains(tags: string[][], searchQuery: string): boolean {
   let contains = false;

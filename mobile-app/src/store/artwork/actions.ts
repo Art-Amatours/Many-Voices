@@ -6,6 +6,9 @@ import {
   SET_LOADING_ERROR,
   SET_SEARCH_QUERY,
   FETCH_ALL_ARTWORK_FROM_CLOUD,
+  SET_CURRENT_ARTWORK,
+  Critique,
+  SET_CURRENT_CRITIQUE,
 } from './types';
 
 // Action creator for the SET_LOADING_ERROR action type.
@@ -23,6 +26,19 @@ export function setSearchQuery(to: string): ArtworkActionTypes {
   };
 }
 
+export function setCurrentArtwork(to: Artwork): ArtworkActionTypes {
+  return {
+    type: SET_CURRENT_ARTWORK,
+    payload: to,
+  };
+}
+
+export function setCurrentCritique(to: Critique): ArtworkActionTypes {
+  return {
+    type: SET_CURRENT_CRITIQUE,
+    payload: to,
+  };
+}
 // Action creator used by the fetchAllArtworkFromCloud() func.
 function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
   return {

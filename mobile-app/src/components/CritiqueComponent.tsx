@@ -7,15 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { ArtworkActionTypes, Critique } from '../store/artwork/types';
 
 import { Tag } from './Tag';
 
 // Styles
 export interface Props {
-    title: string;
-    subtitle: string;
-    duration: string;
-    tags: string[];
+    critique: Critique
+    setCritique: (critique: Critique) => ArtworkActionTypes
 }
 
 const activeOpacity = 0.8;
@@ -76,26 +75,26 @@ const styles = StyleSheet.create({
 
 // Component
 
-export const Critique: React.FC<Props> = (props: Props) => (
+export const CritiqueComponent: React.FC<Props> = (props: Props) => (
     <>
     <TouchableOpacity
       style={[styles.container, styles.row]}
-      onPress={() => {}}
+      onPress={() => props.setCritique(props.critique)}
     >
       <View style={[styles.col, { alignItems: 'stretch' }]}>
-        <Text style={styles.title}>{ props.title }</Text>
-        <Text style={styles.subtitle}>{ props.subtitle }</Text>
+        <Text style={styles.title}>{ props.critique.title }</Text>
+        <Text style={styles.subtitle}>{ props.critique.critic }</Text>
       </View>
       <View style={styles.col}>
-        <Text style={[styles.duration, styles.rightAligned]}>{ props.duration }</Text>
+        <Text style={[styles.duration, styles.rightAligned]}>{ "1:23" }</Text>
         <View style={styles.row}>
           {
-            props.tags.map((tag, index) => (
+            props.critique.tags.map((tag, index) => (
               <View
                 key={index}
-                style={[styles.tag, { backgroundColor: '#af52de' }]}
+                style={[styles.tag, { backgroundColor: tag[1] }]}
               >
-                <Text style={styles.tagText}>{ tag }</Text>
+                <Text style={styles.tagText}>{ tag[0] }</Text>
               </View>
             ))
           }
@@ -105,5 +104,5 @@ export const Critique: React.FC<Props> = (props: Props) => (
   </>
 );
 
-export default Critique;
+export default CritiqueComponent;
 
