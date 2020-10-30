@@ -20,6 +20,27 @@ import { setIsPaused } from '../store/artwork/actions';
 
 import MediaExpanded from './MediaExpanded';
 
+/*
+*  TRACK PLAYING SET UP
+*/
+import { Audio } from 'expo-av'
+const audio = new Audio.Sound();
+
+async function playAudio(url: string) {
+  try {
+    const { sound } = await Audio.Sound.createAsync(
+      {uri:url} ,
+      {
+        shouldPlay: true,
+        isLooping: true,
+    });
+  } catch (error) {
+    console.log("Oh noooooooooooo");
+  } 
+}
+
+
+
 const snapTop = Dimensions.get('window').height * 0.25;
 
 const snapBottom = Dimensions.get('window').height  * 0.85;
@@ -163,7 +184,13 @@ const styles = StyleSheet.create({
         <TouchableOpacity
             style={styles.play}
             // A BIT OF HARDCODING TESTING HERE....
-            onPress= {() => props.setIsPaused(false)}
+            onPress= {() => 
+              {
+                props.setIsPaused(false)
+                playAudio('https://many-voices-app-content.s3.amazonaws.com/weeping-woman/critiques/critique-one/weeping-woman-critique-one.mp3')
+
+              }
+            }
         />
         );
     } else {
@@ -172,6 +199,8 @@ const styles = StyleSheet.create({
             style={styles.pause}
             // A BIT OF HARDCODING TESTING HERE....
             onPress={() => props.setIsPaused(true)}
+            p
+            
         />
         );
     }
