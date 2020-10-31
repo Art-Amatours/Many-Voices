@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import * as RootNavigation from '../navigation/RootNavigation';
 import { Artwork } from '../store/artwork/types';
-import { Tag } from './Tag';
+import Tag from './Tag';
 import { connect, ConnectedProps } from 'react-redux';
 import { setCurrentArtwork } from '../store/artwork/actions';
 
