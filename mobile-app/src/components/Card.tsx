@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Dimensions,
   ImageBackground,
@@ -8,15 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
+import * as RootNavigation from '../navigation/RootNavigation';
+import { Artwork } from '../store/artwork/types';
 import { Tag } from './Tag';
-import * as RootNavigation from '../navigation/RootNavigation'
-
 import { connect, ConnectedProps } from 'react-redux';
-import { RootState } from '../store';
-import { setCurrentArtwork} from '../store/artwork/actions';
-import { Artwork, ArtworkActionTypes } from '../store/artwork/types';
-
+import { setCurrentArtwork } from '../store/artwork/actions';
 
 // Styles
 
@@ -37,8 +32,6 @@ const styles = StyleSheet.create({
     width: cardWidth,
     height: cardHeight,
     marginTop: 24,
-    // marginBottom: 12,
-
     shadowColor: 'black',
     shadowOpacity: 0.35,
     shadowOffset: { width: 0, height: 4 },
@@ -75,30 +68,30 @@ const styles = StyleSheet.create({
 
 // Redux goodness.
 
-// const mapState = (props: Props) => ({
-//   artwork: props.artwork
-// });
-// const mapDispatch = {
-//   setArtwork: (artwork: Artwork) => setCurrentArtwork(artwork),
-// };
-// const connector = connect(mapState, mapDispatch);
-// type PropsFromRedux = ConnectedProps<typeof connector>;
+const mapDispatch = {
+  setCurrentArtwork: (artwork: Artwork) => setCurrentArtwork(artwork),
+};
+const connector = connect(null, mapDispatch);
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-// Component
-export interface Props {
-  artwork: Artwork,
-  setArtwork : (artwork: Artwork) => ArtworkActionTypes,
+// Component.
+
+interface Props {
+  artwork: Artwork;
 }
-export const Card: React.FC<Props> = (props: Props) => (
-  <TouchableOpacity 
+
+const Card: React.FC<Props & PropsFromRedux> = (
+  props: Props & PropsFromRedux,
+) => (
+  <TouchableOpacity
+    style={styles.card}
+    activeOpacity={activeOpacity}
     onPress={() => {
-      // reduxProps.setCurrentArtwork(props.artwork);
-      props.setArtwork(props.artwork);
-      RootNavigation.navigate("Details");
-    }}
-    style={styles.card} activeOpacity={activeOpacity}>
+      props.setCurrentArtwork(props.artwork);
+      RootNavigation.navigate('Details');
+    }}>
     <ImageBackground
-      source={{ uri: props.artwork.imageURLs[0]}}
+      source={{ uri: props.artwork.imageURLs[0] }}
       style={styles.bgImg}
       imageStyle={{ borderRadius }}>
       <View style={[styles.labels, styles.row]}>
@@ -112,4 +105,4 @@ export const Card: React.FC<Props> = (props: Props) => (
   </TouchableOpacity>
 );
 
-export default Card;
+export default connector(Card);

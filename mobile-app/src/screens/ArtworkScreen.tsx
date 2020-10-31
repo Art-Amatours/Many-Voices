@@ -1,24 +1,16 @@
 import React, { useEffect } from 'react';
-import { Card } from '../components/Card';
+import Card from '../components/Card';
 import { RootState } from '../store';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SearchBar from '../components/SearchBar';
 import { Title } from '../components/Title';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
-import { fetchAllArtworkFromCloud, setCurrentArtwork } from '../store/artwork/actions';
+import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
 import Constants from 'expo-constants';
 import { Artwork, SET_CURRENT_ARTWORK } from '../store/artwork/types';
 import { ArtworkActionTypes } from '../store/artwork/types';
 import * as RootNavigation from '../navigation/RootNavigation';
-
-
-
-
-
-
-
-
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -32,11 +24,6 @@ if (__DEV__) {
 } else {
   host = 'public-address-for-some-remote-box';
 }
-
-
-
-
-
 
 // Styles.
 
@@ -62,7 +49,6 @@ const mapState = (state: RootState) => ({
 });
 const mapDispatch = {
   fetchAllArtworkFromCloud: () => fetchAllArtworkFromCloud(host),
-  setCurrentArtwork: (artwork: Artwork) => setCurrentArtwork(artwork),
 };
 const connector = connect(mapState, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -75,8 +61,6 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   // store.
   useEffect(() => props.fetchAllArtworkFromCloud(), []);
 
-  
-  
   return (
     <View style={styles.container}>
       <Title text="Artwork Screen" />
@@ -98,15 +82,11 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
             ) {
               return (
                 // <TouchableOpacity
-                //   onPress = { () => { 
+                //   onPress = { () => {
                 //     props.setCurrentArtwork(artwork);
                 //     RootNavigation.navigate("Details");
                 //   }}>
-                  <Card
-                    artwork = { artwork }
-                    setArtwork = {props.setCurrentArtwork}
-                    key = { key }
-                  />
+                <Card key={key} artwork={artwork} />
                 // </TouchableOpacity>
               );
             } else {
