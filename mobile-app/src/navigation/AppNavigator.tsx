@@ -1,10 +1,10 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import ArtworkScreen from '../screens/ArtworkScreen';
-import { StackParamList } from './types';
-import { navigationRef } from './RootNavigation';
 import DetailsScreen from '../screens/DetailsScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { StackParamList } from './types';
+import { createStackNavigator } from '@react-navigation/stack';
+import { navigationRef } from './RootNavigation';
 
 const Stack = createStackNavigator<StackParamList>();
 
