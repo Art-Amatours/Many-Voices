@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
 import Card from '../components/Card';
-import { RootState } from '../store';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Constants from 'expo-constants';
 import SearchBar from '../components/SearchBar';
 import Title from '../components/Title';
+import { RootState } from '../store';
+import { ScrollView } from 'react-native-gesture-handler';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
-import Constants from 'expo-constants';
-import { Artwork, SET_CURRENT_ARTWORK } from '../store/artwork/types';
-import { ArtworkActionTypes } from '../store/artwork/types';
-import * as RootNavigation from '../navigation/RootNavigation';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -23,6 +20,16 @@ if (__DEV__) {
     ''; // Fallback will break, but we shouldn't ever have to rely on it.
 } else {
   host = 'public-address-for-some-remote-box';
+}
+
+// Helpers.
+
+function tagContains(tags: string[][], searchQuery: string): boolean {
+  let contains = false;
+  tags.forEach((element) => {
+    contains = element[0].includes(searchQuery) || contains;
+  });
+  return contains;
 }
 
 // Styles.
@@ -80,15 +87,7 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               artwork.title.includes(props.search) ||
               tagContains(artwork.tags, props.search)
             ) {
-              return (
-                // <TouchableOpacity
-                //   onPress = { () => {
-                //     props.setCurrentArtwork(artwork);
-                //     RootNavigation.navigate("Details");
-                //   }}>
-                <Card key={key} artwork={artwork} />
-                // </TouchableOpacity>
-              );
+              return <Card key={key} artwork={artwork} />;
             } else {
               return null;
             }
@@ -97,17 +96,5 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
     </View>
   );
 };
-
-// function placeHolder(artwork: Artwork) : ArtworkActionTypes {
-//   return setCurrentArtwork(artwork);
-// }
-
-function tagContains(tags: string[][], searchQuery: string): boolean {
-  let contains = false;
-  tags.forEach((element) => {
-    contains = element[0].includes(searchQuery) || contains;
-  });
-  return contains;
-}
 
 export default connector(ArtworkScreen);
