@@ -3,7 +3,7 @@ import Card from '../components/Card';
 import { RootState } from '../store';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SearchBar from '../components/SearchBar';
-import { Title } from '../components/Title';
+import Title from '../components/Title';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
