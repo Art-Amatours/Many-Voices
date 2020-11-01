@@ -1,21 +1,24 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 // Styles.
 
 const styles = StyleSheet.create({
+  root: {
+    flexDirection: 'column',
+  },
   tag: {
-    marginLeft: 8,
+    marginLeft: 4,
     marginTop: 4,
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 8,
     paddingRight: 8,
-    borderRadius: 10,
-    height: 30,
+    borderRadius: 100,
   },
   tagText: {
-    fontSize: 14,
+    textAlign: 'center',
+    fontSize: 12,
     fontWeight: '600',
     color: 'white',
   },
@@ -28,19 +31,15 @@ interface Props {
 }
 
 const Tag: React.FC<Props> = (props: Props) => {
-  const dataText = props.data.map((item, key) => (
-    <View style={[styles.tag, { backgroundColor: item[1] }]} key={key}>
-      <Text style={styles.tagText} key={key}>
-        {item[0]}
+  const content = props.data.map(([tagName, backgroundColor], key) => (
+    <View key={key} style={[styles.tag, { backgroundColor: backgroundColor }]}>
+      <Text key={key} style={styles.tagText}>
+        {tagName}
       </Text>
     </View>
   ));
 
-  return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      {dataText}
-    </ScrollView>
-  );
+  return <View style={styles.root}>{content}</View>;
 };
 
 export default Tag;
