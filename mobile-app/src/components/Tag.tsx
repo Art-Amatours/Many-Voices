@@ -1,36 +1,9 @@
-import React from "react";
-import { Text, ScrollView, StyleSheet, View } from "react-native";
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-
-interface Props {
-  data: string[][];
-}
-
-export const Tag: React.FC<Props> = (props: Props) => {
-
-  const data_text = props.data.map((item, key)=>(
-    <View style={[styles.tag, { backgroundColor: item[1]}]} key={key}>
-      <Text style={styles.tagText} key={key} >
-          { item[0] }  
-      </Text>
-    </View>
-  ));
-
-  return (
-    <ScrollView style={styles.container} horizontal = { true } showsHorizontalScrollIndicator = { false }>
-        { data_text }
-    </ScrollView>);
-}
-
-
+// Styles.
 
 const styles = StyleSheet.create({
-  container: {
-    // backgroundColor: "blue", 
-    // flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'flex-end',
-  },
   tag: {
     marginLeft: 8,
     marginTop: 4,
@@ -47,3 +20,27 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+// Component.
+
+interface Props {
+  data: string[][];
+}
+
+const Tag: React.FC<Props> = (props: Props) => {
+  const dataText = props.data.map((item, key) => (
+    <View style={[styles.tag, { backgroundColor: item[1] }]} key={key}>
+      <Text style={styles.tagText} key={key}>
+        {item[0]}
+      </Text>
+    </View>
+  ));
+
+  return (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      {dataText}
+    </ScrollView>
+  );
+};
+
+export default Tag;

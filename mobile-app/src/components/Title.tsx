@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-// Styles
+// Styles.
 
 const styles = StyleSheet.create({
   container: {
@@ -18,14 +18,16 @@ const styles = StyleSheet.create({
   },
 });
 
-// Component
+// Component.
 
 interface Props {
-    text: string;
+  text: string;
 }
 
-export const Title: React.FC<Props> = (props: Props) => (
-    <View style={styles.container}>
-      <Text style={styles.text}>{props.text}</Text>
-    </View>
+const Title: React.FC<Props> = (props: Props) => (
+  <View style={styles.container}>
+    <Text style={styles.text}>{props.text}</Text>
+  </View>
 );
+
+export default Title;
