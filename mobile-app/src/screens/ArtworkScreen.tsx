@@ -70,7 +70,7 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
 
   return (
     <View style={styles.container}>
-      <Title text="Artwork Screen" />
+      <Title text="Gallery" />
       <SearchBar />
       <ScrollView
         contentContainerStyle={styles.gallery}
