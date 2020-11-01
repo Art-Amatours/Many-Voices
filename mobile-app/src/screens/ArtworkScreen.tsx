@@ -70,11 +70,11 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
 
   return (
     <View style={styles.container}>
-      <Title text="Gallery" />
-      <SearchBar />
       <ScrollView
         contentContainerStyle={styles.gallery}
         showsVerticalScrollIndicator={false}>
+        <Title text="Gallery" />
+        <SearchBar />
         {props.isLoadingArtwork && <Text>Loading...</Text>}
         {props.didErrorOccurLoadingArtwork && (
           <Text>Something went wrong fetching artwork from the cloud.</Text>
