@@ -140,6 +140,17 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   const [up, setUp] = useState(false);
   const pos = useRef(new Animated.Value(snapBottom)).current;
 
+  let title: string = props.critique.title;
+
+  if (title.length > 24) {
+    if (title[20] == ' ') {
+      title = title.substring(0, 20) + '...';
+    } else {
+      title = title.substring(0, 21) + '...';
+    }
+    
+  }
+
   const handlebarTapHandler = () => {
     if (up) {
       Animated.timing(pos, {
@@ -193,7 +204,7 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
         <SafeAreaView style={[styles.col, styles.mainInfoWrapper]}>
           <View style={styles.row}>
             <View style={styles.col}>
-              <Text style={styles.title}>{props.critique.title}</Text>
+              <Text style={styles.title}>{title}</Text>
               <Text style={styles.subtitle}> {props.critique.critic}</Text>
             </View>
             <View style={styles.row}>
