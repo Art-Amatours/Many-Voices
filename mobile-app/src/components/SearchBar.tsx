@@ -40,6 +40,7 @@ const SearchBar: React.FC<PropsFromRedux> = (props: PropsFromRedux) => (
       onChangeText={(newQuery) => {
         props.setSearchQuery(newQuery);
       }}
+      clearButtonMode="always"
     />
   </View>
 );
