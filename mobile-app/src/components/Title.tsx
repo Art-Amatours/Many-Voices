@@ -8,13 +8,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: {
+    marginTop: 34,
     marginBottom: 8,
     marginLeft: 28,
     marginRight: 28,
     fontSize: 34,
     fontWeight: 'bold',
     color: 'black',
-    textAlign: 'center',
   },
 });
 
