@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud } from '../store/artwork/actions';
+import { Spacer } from '../components/Spacer';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 45,
-    paddingBottom: Dimensions.get('window').height * 0.09,
   },
   gallery: {
     alignItems: 'center',
@@ -50,8 +50,9 @@ const styles = StyleSheet.create({
 
 const mapState = (state: RootState) => ({
   artworkList: state.artwork.list,
-  isLoadingArtwork: state.artwork.isLoading,
   didErrorOccurLoadingArtwork: state.artwork.isError,
+  isLoadingArtwork: state.artwork.isLoading,
+  isPlayingAudio: state.artwork.isPlaying,
   search: state.artwork.searchQuery,
 });
 const mapDispatch = {
@@ -92,6 +93,7 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               return null;
             }
           })}
+        {props.isPlayingAudio && <Spacer />}
       </ScrollView>
     </View>
   );
