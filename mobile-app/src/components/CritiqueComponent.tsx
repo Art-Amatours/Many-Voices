@@ -130,12 +130,7 @@ const CritiqueComponent: React.FC<Props & PropsFromRedux> = (
     <View style={styles.col}>
       <Text style={[styles.duration, styles.rightAligned]}>{'1:23'}</Text>
       <View style={styles.row}>
-        <Tag data = {props.critique.tags} />
-        {/* {props.critique.tags.map((tag, index) => (
-          <View key={index} style={[styles.tag, { backgroundColor: tag[1] }]}>
-            <Text style={styles.tagText}>{tag[0]}</Text>
-          </View>
-        ))} */}
+        <Tag data={props.critique.tags} />
       </View>
     </View>
   </TouchableOpacity>
