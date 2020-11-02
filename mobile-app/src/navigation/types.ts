@@ -1,4 +1,6 @@
 export type StackParamList = {
   Artwork: undefined;
-  Details: undefined;
+  Details: {
+    title: string;
+  };
 };

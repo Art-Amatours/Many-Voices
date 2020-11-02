@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-native';
 import ArtworkScreen from '../screens/ArtworkScreen';
 import DetailsScreen from '../screens/DetailsScreen';
 import { NavigationContainer } from '@react-navigation/native';
@@ -19,7 +20,10 @@ const AppNavigator: React.FC = () => (
       <Stack.Screen
         name="Details"
         component={DetailsScreen}
-        options={{ header: () => null }}
+        options={({ route }) => ({
+          title: route.params.title,
+          headerRight: () => <Button title="Info" />,
+        })}
       />
     </Stack.Navigator>
   </NavigationContainer>
