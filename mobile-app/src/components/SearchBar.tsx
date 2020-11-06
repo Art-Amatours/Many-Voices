@@ -6,17 +6,14 @@ import { setSearchQuery } from '../store/artwork/actions';
 
 // Styles.
 
-const borderRadius = 18;
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
   },
   search: {
-    borderRadius: borderRadius,
-    padding: 18,
-    marginHorizontal: 12,
-    marginTop: 12,
+    borderRadius: 12,
+    padding: 12,
+    marginHorizontal: 28,
     backgroundColor: 'lightgrey',
   },
 });
@@ -43,6 +40,7 @@ const SearchBar: React.FC<PropsFromRedux> = (props: PropsFromRedux) => (
       onChangeText={(newQuery) => {
         props.setSearchQuery(newQuery);
       }}
+      clearButtonMode="always"
     />
   </View>
 );

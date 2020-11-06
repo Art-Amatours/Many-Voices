@@ -88,7 +88,9 @@ const Card: React.FC<Props & PropsFromRedux> = (
     activeOpacity={activeOpacity}
     onPress={() => {
       props.setCurrentArtwork(props.artwork);
-      RootNavigation.navigate('Details');
+      RootNavigation.navigate('Details', {
+        title: props.artwork.title,
+      });
     }}>
     <ImageBackground
       source={{ uri: props.artwork.imageURLs[0] }}

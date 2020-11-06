@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { ArtworkActionTypes, Critique } from '../store/artwork/types';
 import { Audio } from 'expo-av';
+import Tag from './Tag';
 import { connect, ConnectedProps } from 'react-redux';
 import {
   setCurrentCritique,
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '800',
+    width: 256,
   },
   subtitle: {
     fontWeight: '600',
@@ -128,11 +130,7 @@ const CritiqueComponent: React.FC<Props & PropsFromRedux> = (
     <View style={styles.col}>
       <Text style={[styles.duration, styles.rightAligned]}>{'1:23'}</Text>
       <View style={styles.row}>
-        {props.critique.tags.map((tag, index) => (
-          <View key={index} style={[styles.tag, { backgroundColor: tag[1] }]}>
-            <Text style={styles.tagText}>{tag[0]}</Text>
-          </View>
-        ))}
+        <Tag data={props.critique.tags} />
       </View>
     </View>
   </TouchableOpacity>
