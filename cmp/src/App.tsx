@@ -1,5 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { RootState } from './store';
+import { fetchAllArtworkFromCloud } from './store/artwork/actions';
 
-const App: React.FC = () => <h1>Many Voices Content Management Platform</h1>;
+// Change the host that we hit to make API calls depending on if we're running in dev or prod.
+let host: string;
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  host = `http://${window.location.hostname.concat(':6969')}`;
+} else {
+  host = 'public-address-for-some-remote-box';
+}
 
-export default App;
+// Redux goodness.
+
+const mapState = (state: RootState) => ({
+  artworkList: state.artwork.list,
+  isLoadingArtwork: state.artwork.isLoading,
+});
+const mapDispatch = {
+  fetchAllArtworkFromCloud: () => fetchAllArtworkFromCloud(host),
+};
+const connector = connect(mapState, mapDispatch);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+// Component.
+
+const App: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
+  // When the app first launches, reach out to the network to fetch all of the
+  // content this app will need to display, and throw it in the redux global
+  // store.
+  useEffect(() => props.fetchAllArtworkFromCloud(), [props]);
+
+  return (
+    <>
+      {props.isLoadingArtwork && <p>Loading...</p>}
+      {!props.isLoadingArtwork && <p>{JSON.stringify(props.artworkList)}</p>}
+    </>
+  );
+};
+
+export default connector(App);
