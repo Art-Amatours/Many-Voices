@@ -31,7 +31,7 @@ Follow the [instructions in the server/ dir](server/README.md)
 
 ### Mobile App Setup
 
-Pull in required dependencies with `$ cd mobile-app && yarn install`
+Pull in required dependencies with `$ cd mobile-app && yarn`
 
 ## Running Locally
 
