@@ -1,6 +1,7 @@
 .artwork-card {
   display: flex;
   flex-direction: column;
+  width: 400px;
 }
 
 .info {
@@ -41,4 +42,8 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+img {
+  width: 100%;
 }

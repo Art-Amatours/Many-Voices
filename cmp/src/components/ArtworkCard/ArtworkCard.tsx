@@ -6,6 +6,7 @@ interface Props {
   title: string;
   artist: string;
   numCritiques: number;
+  imageURLs: string[];
 }
 
 const ArtworkCard: React.FC<Props> = (props) => (
@@ -22,21 +23,7 @@ const ArtworkCard: React.FC<Props> = (props) => (
           <span className="author">{props.artist}</span>
         </div>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: '220px',
-          background: 'lightgray',
-          textAlign: 'center',
-          fontSize: '0.8em',
-          lineHeight: '1.5',
-        }}>
-        Image goes here :)
-        <br /> Maybe a carousel
-      </div>
+      <img src={props.imageURLs[0]} alt={`Artwork: ${props.title}`} />
     </div>
   </Card>
 );
