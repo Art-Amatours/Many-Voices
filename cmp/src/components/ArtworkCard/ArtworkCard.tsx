@@ -4,7 +4,7 @@ import Card from '../card/Card';
 
 interface Props {
   title: string;
-  author: string;
+  artist: string;
   numCritiques: number;
 }
 
@@ -17,7 +17,7 @@ const ArtworkCard: React.FC<Props> = (props) => (
           <span className="num-critiques">{props.numCritiques} critiques</span>
         </div>
         <div className="info-row">
-          <span className="author">{props.author}</span>
+          <span className="author">{props.artist}</span>
         </div>
       </div>
       <div
