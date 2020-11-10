@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from './store';
 import { fetchAllArtworkFromCloud } from './store/artwork/actions';
 import ArtworkCard from './components/ArtworkCard/ArtworkCard';
+import GalleryView from './views/GalleryView/GalleryView';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -15,14 +16,10 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 
 // Redux goodness.
 
-const mapState = (state: RootState) => ({
-  artworkList: state.artwork.list,
-  isLoadingArtwork: state.artwork.isLoading,
-});
 const mapDispatch = {
   fetchAllArtworkFromCloud: () => fetchAllArtworkFromCloud(host),
 };
-const connector = connect(mapState, mapDispatch);
+const connector = connect(null, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 // Component.
@@ -33,24 +30,7 @@ const App: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   // store.
   useEffect(() => props.fetchAllArtworkFromCloud(), [props]);
 
-  return (
-    <>
-      {props.isLoadingArtwork && <p>Loading...</p>}
-      {!props.isLoadingArtwork && (
-        <div className="card-container">
-          {props.artworkList.map((artwork) => (
-            <ArtworkCard
-              title={artwork.title}
-              artist={artwork.artist}
-              numCritiques={artwork.critiques.length}
-              imageURLs={artwork.imageURLs}
-              tagData={artwork.tags}
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
+  return <GalleryView />;
 };
 
 export default connector(App);
