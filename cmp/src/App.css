@@ -1,0 +1,4 @@
+.card-container {
+  columns: 400px auto;
+  column-gap: 1rem;
+}

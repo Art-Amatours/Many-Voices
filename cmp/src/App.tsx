@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
+import './App.css';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from './store';
 import { fetchAllArtworkFromCloud } from './store/artwork/actions';
+import ArtworkCard from './components/ArtworkCard/ArtworkCard';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -34,7 +36,18 @@ const App: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   return (
     <>
       {props.isLoadingArtwork && <p>Loading...</p>}
-      {!props.isLoadingArtwork && <p>{JSON.stringify(props.artworkList)}</p>}
+      {!props.isLoadingArtwork && (
+        <div className="card-container">
+          {props.artworkList.map((artwork) => (
+            <ArtworkCard
+              title={artwork.title}
+              artist={artwork.artist}
+              numCritiques={artwork.critiques.length}
+              imageURLs={artwork.imageURLs}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 };
