@@ -3,21 +3,42 @@
   flex-direction: column;
 }
 
-.artwork-card > * {
-  font-size: 0.8em;
-}
-
-.artwork-card > span:not(:last-child) {
-  margin-bottom: 0.5rem;
-}
-
-.text {
+.info {
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding: 12px;
+}
+
+.info > *:not(:last-child) {
+  margin-bottom: 0.25rem;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-row > *:not(.title) {
+  font-size: 0.8rem;
 }
 
 .title {
-  font-size: 1em;
   font-weight: bold;
+  margin-right: 0.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.num-critiques {
+  white-space: nowrap;
+}
+
+.author {
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
