@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles.css';
-import Card from '../card/Card';
+import Card from '../Card/Card';
 
 interface Props {
   title: string;
