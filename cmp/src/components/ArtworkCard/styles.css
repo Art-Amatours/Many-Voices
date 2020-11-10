@@ -1,0 +1,23 @@
+.artwork-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.artwork-card > * {
+  font-size: 0.8em;
+}
+
+.artwork-card > span:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.title {
+  font-size: 1em;
+  font-weight: bold;
+}
