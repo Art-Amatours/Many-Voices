@@ -44,6 +44,7 @@ const App: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               artist={artwork.artist}
               numCritiques={artwork.critiques.length}
               imageURLs={artwork.imageURLs}
+              tagData={artwork.tags}
             />
           ))}
         </div>

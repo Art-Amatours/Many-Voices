@@ -1,12 +1,14 @@
 import React from 'react';
 import './styles.css';
 import Card from '../Card/Card';
+import Tag from '../Tag/Tag';
 
 interface Props {
   title: string;
   artist: string;
   numCritiques: number;
   imageURLs: string[];
+  tagData: string[][];
 }
 
 const ArtworkCard: React.FC<Props> = (props) => (
@@ -21,6 +23,11 @@ const ArtworkCard: React.FC<Props> = (props) => (
         </div>
         <div className="info-row">
           <span className="author">{props.artist}</span>
+        </div>
+        <div className="tag-row">
+          {props.tagData.map(([name, backgroundColor]) => (
+            <Tag name={name} backgroundColor={backgroundColor} />
+          ))}
         </div>
       </div>
       <img src={props.imageURLs[0]} alt={`Artwork: ${props.title}`} />
