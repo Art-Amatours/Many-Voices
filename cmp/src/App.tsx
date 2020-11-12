@@ -5,6 +5,7 @@ import { RootState } from './store';
 import { fetchAllArtworkFromCloud } from './store/artwork/actions';
 import ArtworkCard from './components/ArtworkCard/ArtworkCard';
 import GalleryView from './views/GalleryView/GalleryView';
+import Header from './components/Header/Header';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -30,7 +31,12 @@ const App: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   // store.
   useEffect(() => props.fetchAllArtworkFromCloud(), [props]);
 
-  return <GalleryView />;
+  return (
+    <>
+      <Header />
+      <GalleryView />
+    </>
+  );
 };
 
 export default connector(App);
