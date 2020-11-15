@@ -1,14 +1,14 @@
 import { Audio } from 'expo-av'
 import {
-  ArtworkState,
   ArtworkActionTypes,
+  ArtworkState,
   FETCH_ALL_ARTWORK_FROM_CLOUD,
-  SET_LOADING_ERROR,
-  SET_SEARCH_QUERY,
   SET_CURRENT_ARTWORK,
   SET_CURRENT_CRITIQUE,
-  SET_IS_PAUSED,
   SET_CURRENT_SOUND,
+  SET_IS_PAUSED,
+  SET_LOADING_ERROR,
+  SET_SEARCH_QUERY,
 } from './types';
 // import { Artwork, Critique } from './types'
 
@@ -30,7 +30,7 @@ const initialState: ArtworkState = {
     critic: "",
     transcript: "",
     tags: [[]],
-    AudioURL: "",
+    audioURL: "",
   },
   isPlaying: false,
   isPaused: true,
@@ -77,9 +77,9 @@ export default function artworkReducer(
         isPaused: action.payload,
       }
     case SET_CURRENT_SOUND:
-        return {
-          ...state,
-          currentSound: action.payload,
+      return {
+        ...state,
+        currentSound: action.payload,
       }
     default:
       return state;

@@ -14,7 +14,7 @@ export interface Critique {
   critic: string;
   transcript: string;
   tags: string[][];
-  AudioURL: string;
+  audioURL: string;
 }
 
 export interface ArtworkState {

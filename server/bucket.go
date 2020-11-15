@@ -92,7 +92,7 @@ type CritiqueInfo struct {
 	Critic     string     `json:"critic"`
 	Transcript string     `json:"transcript"`
 	Tags       [][]string `json:"tags"`
-	AudioURL   string     `json:"audioURL`
+	AudioURL   string     `json:"audioURL"`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.

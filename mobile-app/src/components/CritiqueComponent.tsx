@@ -21,7 +21,7 @@ import {
 async function playAudio(
   url: string,
   currentSound: Audio.Sound,
-  setCurrentSound: (Sound: Audio.Sound) => ArtworkActionTypes,
+  setCurrentSound: (sound: Audio.Sound) => ArtworkActionTypes,
 ) {
   try {
     currentSound.unloadAsync();
@@ -118,7 +118,7 @@ const CritiqueComponent: React.FC<Props & PropsFromRedux> = (
       props.setIsPaused(false);
       props.setCurrentCritique(props.critique);
       playAudio(
-        props.critique.AudioURL,
+        props.critique.audioURL,
         props.currentSound,
         props.setCurrentSound,
       );
