@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -60,6 +59,7 @@ type ReplaceExistingJSONFileRequestBody struct {
 	Content    interface{} `json:"content"`
 }
 
+// replaceExistingFileHandler handles POST requests on the "/replaceExistingFile" route.
 func (s *Server) replaceExistingFileHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "This endpoint only supports POST requests", http.StatusBadRequest)
@@ -93,7 +93,11 @@ func (s *Server) replaceExistingFileHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Send that file off to the S3 bucket.
-	ioutil.WriteFile("testing.json", file, 0644) // TODO: TEMPORARY!
+	err = s.bucket.ReplaceExistingJSONFile(rb.ObjectPath, file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusNoContent)
 }

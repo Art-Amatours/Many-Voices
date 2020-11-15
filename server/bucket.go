@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
 	"sync"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 const (
@@ -27,7 +30,8 @@ type Bucket struct {
 	region string
 	// svc is a reference to an AWS service client. svc handles all interactions, or operations,
 	// with this bucket.
-	svc *s3.S3
+	svc      *s3.S3
+	uploader *s3manager.Uploader
 	// fileExtRegexp stores a compiled regular expression for stripping out file extensions from
 	// file names.
 	fileExtRegexp *regexp.Regexp
@@ -47,9 +51,10 @@ func NewBucket(name, region string) (*Bucket, error) {
 		return nil, fmt.Errorf("Failed to establish a new AWS session: %v", err)
 	}
 
-	// This session is safe to use concurrently (in multiple goroutines), which means that we're
-	// all clear to use it in HTTP handler functions.
+	// These sessions are safe to use concurrently (in multiple goroutines), which means that we're
+	// all clear to use them in HTTP handler functions.
 	svc := s3.New(sess)
+	uploader := s3manager.NewUploader(sess)
 
 	// These steps are kinda expensive. Instead of doing this in FetchAllArtwork() and compiling a
 	// regexp each time we traverse the bucket's file system, we do this once on Bucket object
@@ -67,7 +72,7 @@ func NewBucket(name, region string) (*Bucket, error) {
 		return nil, fmt.Errorf("Failed to compile critiques subdir regexp: %v", err)
 	}
 
-	return &Bucket{name, region, svc, fileExtRegexp, imagesSubDirRegexp, critiquesSubDirRegexp}, nil
+	return &Bucket{name, region, svc, uploader, fileExtRegexp, imagesSubDirRegexp, critiquesSubDirRegexp}, nil
 }
 
 // ArtworkInfo describes all information about an artwork in the bucket.
@@ -83,11 +88,11 @@ type ArtworkInfo struct {
 // CritiqueInfo describes information about each audio critique associated with
 // one artwork.
 type CritiqueInfo struct {
-	Title      string   	`json:"title"`
-	Critic     string   	`json:"critic"`
-	Transcript string   	`json:"transcript"`
-	Tags       [][]string 	`json:"tags"`
-	AudioURL   string   	`json:"audioURL`
+	Title      string     `json:"title"`
+	Critic     string     `json:"critic"`
+	Transcript string     `json:"transcript"`
+	Tags       [][]string `json:"tags"`
+	AudioURL   string     `json:"audioURL`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.
@@ -167,7 +172,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 		if *object.Size > 0 && b.critiquesSubDirRegexp.MatchString(*object.Key) && b.fileExtRegexp.FindString(*object.Key) == ".json" {
 			// Construct public URL for the object.
 			objectURL := bucketURLPrefix + b.name + bucketURLSuffix + *object.Key
-			
+
 			// Add audioURL for critique
 			audioURL := bucketURLPrefix + b.name + bucketURLSuffix + (strings.Replace(*object.Key, ".json", ".mp3", 1))
 			critiqueList := artworkList[curArtworkIndex].Critiques
@@ -253,7 +258,7 @@ func addCritiqueInfo(
 	fileURL string,
 	critiqueList []*CritiqueInfo,
 	curCritiqueIndex int,
-	audioURL string, 
+	audioURL string,
 	wg *sync.WaitGroup,
 	errChan chan error,
 ) {
@@ -293,4 +298,19 @@ func addCritiqueInfo(
 func addImage(fileURL string, artworkList []*ArtworkInfo, curArtworkIndex int) {
 	curArtworkImagesList := artworkList[curArtworkIndex].ImageURLs
 	artworkList[curArtworkIndex].ImageURLs = append(curArtworkImagesList, fileURL)
+}
+
+// ReplaceExistingJSONFile replaces the file at the provided object path in the S3 bucket with a new
+// one.
+func (b *Bucket) ReplaceExistingJSONFile(objectPath string, file []byte) error {
+	_, err := b.uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(b.name),
+		Key:    aws.String(objectPath),
+		Body:   bytes.NewReader(file),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to upload new %s: %v", objectPath, err)
+	}
+
+	return nil
 }
