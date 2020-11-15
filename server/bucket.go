@@ -83,6 +83,7 @@ type ArtworkInfo struct {
 	Tags        [][]string      `json:"tags"`
 	ImageURLs   []string        `json:"imageURLs"`
 	Critiques   []*CritiqueInfo `json:"critiques"`
+	ObjectPath  string          `json:"objectPath"`
 }
 
 // CritiqueInfo describes information about each audio critique associated with
@@ -93,6 +94,7 @@ type CritiqueInfo struct {
 	Transcript string     `json:"transcript"`
 	Tags       [][]string `json:"tags"`
 	AudioURL   string     `json:"audioURL"`
+	ObjectPath string     `json:"objectPath"`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.
@@ -153,7 +155,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// Download the top-level .json file for this artwork and store its contents in the
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
-			go addArtworkInfo(objectURL, artworkList, curArtworkIndex, &wg, errChan)
+			go addArtworkInfo(*object.Key, objectURL, artworkList, curArtworkIndex, &wg, errChan)
 
 			continue
 		}
@@ -179,7 +181,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// Download the .json file for the current critique and store its contents in the
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
-			go addCritiqueInfo(objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], audioURL, &wg, errChan)
+			go addCritiqueInfo(*object.Key, objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], audioURL, &wg, errChan)
 
 			continue
 		}
@@ -214,6 +216,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 // curArtworkIndex'th index of the artworkList slice. If something goes wrong, it will push an error
 // onto the provided error channel.
 func addArtworkInfo(
+	objectPath string,
 	fileURL string,
 	artworkList []*ArtworkInfo,
 	curArtworkIndex int,
@@ -248,6 +251,8 @@ func addArtworkInfo(
 	curArtworkInfoObj.Artist = bodyAsObj.Artist
 	curArtworkInfoObj.Description = bodyAsObj.Description
 	curArtworkInfoObj.Tags = bodyAsObj.Tags
+
+	curArtworkInfoObj.ObjectPath = objectPath
 }
 
 // addCritiqueInfo is a helper func to FetchAllArtwork(). It fetches the JSON file at the provided
@@ -255,6 +260,7 @@ func addArtworkInfo(
 // curCritiqueIndex'th index of the critiqueList slice. If something goes wrong, it will push an
 // error onto the provided error channel.
 func addCritiqueInfo(
+	objectPath string,
 	fileURL string,
 	critiqueList []*CritiqueInfo,
 	curCritiqueIndex int,
@@ -291,6 +297,8 @@ func addCritiqueInfo(
 	curCritiqueInfoObj.Transcript = bodyAsObj.Transcript
 	curCritiqueInfoObj.AudioURL = audioURL
 	curCritiqueInfoObj.Tags = bodyAsObj.Tags
+
+	curCritiqueInfoObj.ObjectPath = objectPath
 }
 
 // addImage is a helper func to FetchAllArtwork(). It adds the provided URL to the images slice on
