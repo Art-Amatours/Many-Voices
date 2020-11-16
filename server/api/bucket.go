@@ -8,6 +8,8 @@ import (
 	"github.com/Art-Amatours/Many-Voices/bucket"
 )
 
+const resourcePrefix = "/bucket"
+
 // BucketHandler handles requests to endpoints that respond with information about artwork info in
 // our S3 bucket.
 type BucketHandler struct {
@@ -54,7 +56,7 @@ func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Requ
 	//
 	// TODO: validate URI structure. We aren't checking that the provided object path in the URI is
 	// present, much less valid.
-	objectPath := strings.TrimPrefix(r.URL.Path, "/bucket")
+	objectPath := strings.TrimPrefix(r.URL.Path, resourcePrefix)
 
 	// Send that file off to the S3 bucket.
 	err = h.bucket.ReplaceExistingJSONFile(objectPath, file)
@@ -68,6 +70,6 @@ func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Requ
 
 // RegisterRoutes registers handlers for all of the routes that BucketHandler supports.
 func (h *BucketHandler) RegisterRoutes(router *http.ServeMux) {
-	router.HandleFunc("/bucket", h.getContentsHandler)
-	router.HandleFunc("/bucket/", h.postNewObjectHandler)
+	router.HandleFunc(resourcePrefix, h.getContentsHandler)
+	router.HandleFunc(resourcePrefix+"/", h.postNewObjectHandler)
 }
