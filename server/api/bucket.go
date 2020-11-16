@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -46,7 +47,13 @@ func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	// Turn payload into a "file" (slice of bytes).
-	file, err := json.MarshalIndent(r.Body, "", " ")
+	var requestBody interface{}
+	err := json.NewDecoder(r.Body).Decode(&requestBody)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("The request body is not valid JSON: %v", err), http.StatusBadRequest)
+		return
+	}
+	file, err := json.MarshalIndent(requestBody, "", " ")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
