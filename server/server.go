@@ -27,6 +27,7 @@ func (s *Server) Start() {
 	// Register routes with their respective handler funcs.
 	http.HandleFunc("/hello", s.helloHandler)
 	http.HandleFunc("/bucketContents", s.bucketContentsHandler)
+	http.HandleFunc("/replaceExistingFile", s.replaceExistingFileHandler)
 
 	// Stand up the server.
 	log.Printf("Listening on port %d....", s.port)
@@ -49,6 +50,56 @@ func (s *Server) bucketContentsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	constructAndSendResponse(w, contents)
+}
+
+// ReplaceExistingJSONFileRequestBody represents the structure of the request body for a hit to the
+// POST /replaceExistingFile endpoint.
+type ReplaceExistingJSONFileRequestBody struct {
+	ObjectPath string      `json:"objectPath"`
+	Content    interface{} `json:"content"`
+}
+
+// replaceExistingFileHandler handles POST requests on the "/replaceExistingFile" route.
+func (s *Server) replaceExistingFileHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "This endpoint only supports POST requests", http.StatusBadRequest)
+		return
+	}
+
+	// Extract request body into rb (request body) struct.
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	var rb ReplaceExistingJSONFileRequestBody
+	err := decoder.Decode(&rb)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if rb.ObjectPath == "" {
+		http.Error(w, "objectPath field must be present in request body", http.StatusBadRequest)
+		return
+	}
+	if rb.Content == nil {
+		http.Error(w, "content field must be present in request body", http.StatusBadRequest)
+		return
+	}
+
+	// Turn payload into a "file" (slice of bytes).
+	file, err := json.MarshalIndent(rb.Content, "", " ")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Send that file off to the S3 bucket.
+	err = s.bucket.ReplaceExistingJSONFile(rb.ObjectPath, file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // constructAndSendResponse adds important, common headers to endpoint responses, and marshals the

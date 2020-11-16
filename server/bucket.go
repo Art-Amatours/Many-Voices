@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
 	"sync"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 const (
@@ -27,7 +30,8 @@ type Bucket struct {
 	region string
 	// svc is a reference to an AWS service client. svc handles all interactions, or operations,
 	// with this bucket.
-	svc *s3.S3
+	svc      *s3.S3
+	uploader *s3manager.Uploader
 	// fileExtRegexp stores a compiled regular expression for stripping out file extensions from
 	// file names.
 	fileExtRegexp *regexp.Regexp
@@ -47,9 +51,10 @@ func NewBucket(name, region string) (*Bucket, error) {
 		return nil, fmt.Errorf("Failed to establish a new AWS session: %v", err)
 	}
 
-	// This session is safe to use concurrently (in multiple goroutines), which means that we're
-	// all clear to use it in HTTP handler functions.
+	// These sessions are safe to use concurrently (in multiple goroutines), which means that we're
+	// all clear to use them in HTTP handler functions.
 	svc := s3.New(sess)
+	uploader := s3manager.NewUploader(sess)
 
 	// These steps are kinda expensive. Instead of doing this in FetchAllArtwork() and compiling a
 	// regexp each time we traverse the bucket's file system, we do this once on Bucket object
@@ -67,7 +72,7 @@ func NewBucket(name, region string) (*Bucket, error) {
 		return nil, fmt.Errorf("Failed to compile critiques subdir regexp: %v", err)
 	}
 
-	return &Bucket{name, region, svc, fileExtRegexp, imagesSubDirRegexp, critiquesSubDirRegexp}, nil
+	return &Bucket{name, region, svc, uploader, fileExtRegexp, imagesSubDirRegexp, critiquesSubDirRegexp}, nil
 }
 
 // ArtworkInfo describes all information about an artwork in the bucket.
@@ -78,16 +83,18 @@ type ArtworkInfo struct {
 	Tags        [][]string      `json:"tags"`
 	ImageURLs   []string        `json:"imageURLs"`
 	Critiques   []*CritiqueInfo `json:"critiques"`
+	ObjectPath  string          `json:"objectPath"`
 }
 
 // CritiqueInfo describes information about each audio critique associated with
 // one artwork.
 type CritiqueInfo struct {
-	Title      string   	`json:"title"`
-	Critic     string   	`json:"critic"`
-	Transcript string   	`json:"transcript"`
-	Tags       [][]string 	`json:"tags"`
-	AudioURL   string   	`json:"audioURL`
+	Title      string     `json:"title"`
+	Critic     string     `json:"critic"`
+	Transcript string     `json:"transcript"`
+	Tags       [][]string `json:"tags"`
+	AudioURL   string     `json:"audioURL"`
+	ObjectPath string     `json:"objectPath"`
 }
 
 // FetchAllArtwork fetches information for all of the artwork in the S3 bucket.
@@ -148,7 +155,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 			// Download the top-level .json file for this artwork and store its contents in the
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
-			go addArtworkInfo(objectURL, artworkList, curArtworkIndex, &wg, errChan)
+			go addArtworkInfo(*object.Key, objectURL, artworkList, curArtworkIndex, &wg, errChan)
 
 			continue
 		}
@@ -167,14 +174,14 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 		if *object.Size > 0 && b.critiquesSubDirRegexp.MatchString(*object.Key) && b.fileExtRegexp.FindString(*object.Key) == ".json" {
 			// Construct public URL for the object.
 			objectURL := bucketURLPrefix + b.name + bucketURLSuffix + *object.Key
-			
+
 			// Add audioURL for critique
 			audioURL := bucketURLPrefix + b.name + bucketURLSuffix + (strings.Replace(*object.Key, ".json", ".mp3", 1))
 			critiqueList := artworkList[curArtworkIndex].Critiques
 			// Download the .json file for the current critique and store its contents in the
 			// corresponding ArtworkInfo struct pointed to by curArtworkIndex.
 			wg.Add(1)
-			go addCritiqueInfo(objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], audioURL, &wg, errChan)
+			go addCritiqueInfo(*object.Key, objectURL, critiqueList, curCritiqueIndexes[curArtworkIndex], audioURL, &wg, errChan)
 
 			continue
 		}
@@ -209,6 +216,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 // curArtworkIndex'th index of the artworkList slice. If something goes wrong, it will push an error
 // onto the provided error channel.
 func addArtworkInfo(
+	objectPath string,
 	fileURL string,
 	artworkList []*ArtworkInfo,
 	curArtworkIndex int,
@@ -243,6 +251,8 @@ func addArtworkInfo(
 	curArtworkInfoObj.Artist = bodyAsObj.Artist
 	curArtworkInfoObj.Description = bodyAsObj.Description
 	curArtworkInfoObj.Tags = bodyAsObj.Tags
+
+	curArtworkInfoObj.ObjectPath = objectPath
 }
 
 // addCritiqueInfo is a helper func to FetchAllArtwork(). It fetches the JSON file at the provided
@@ -250,10 +260,11 @@ func addArtworkInfo(
 // curCritiqueIndex'th index of the critiqueList slice. If something goes wrong, it will push an
 // error onto the provided error channel.
 func addCritiqueInfo(
+	objectPath string,
 	fileURL string,
 	critiqueList []*CritiqueInfo,
 	curCritiqueIndex int,
-	audioURL string, 
+	audioURL string,
 	wg *sync.WaitGroup,
 	errChan chan error,
 ) {
@@ -286,6 +297,8 @@ func addCritiqueInfo(
 	curCritiqueInfoObj.Transcript = bodyAsObj.Transcript
 	curCritiqueInfoObj.AudioURL = audioURL
 	curCritiqueInfoObj.Tags = bodyAsObj.Tags
+
+	curCritiqueInfoObj.ObjectPath = objectPath
 }
 
 // addImage is a helper func to FetchAllArtwork(). It adds the provided URL to the images slice on
@@ -293,4 +306,19 @@ func addCritiqueInfo(
 func addImage(fileURL string, artworkList []*ArtworkInfo, curArtworkIndex int) {
 	curArtworkImagesList := artworkList[curArtworkIndex].ImageURLs
 	artworkList[curArtworkIndex].ImageURLs = append(curArtworkImagesList, fileURL)
+}
+
+// ReplaceExistingJSONFile replaces the file at the provided object path in the S3 bucket with a new
+// one.
+func (b *Bucket) ReplaceExistingJSONFile(objectPath string, file []byte) error {
+	_, err := b.uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(b.name),
+		Key:    aws.String(objectPath),
+		Body:   bytes.NewReader(file),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to upload new %s: %v", objectPath, err)
+	}
+
+	return nil
 }
