@@ -18,8 +18,13 @@ func NewBucketHandler(bucket *bucket.Bucket) *BucketHandler {
 	return &BucketHandler{bucket}
 }
 
-// bucketContentsHandler handles requests on the "/bucketContents" route.
-func (h *BucketHandler) bucketContentsHandler(w http.ResponseWriter, r *http.Request) {
+// getContentsHandler handles requests on GET /bucket.
+func (h *BucketHandler) getContentsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "This endpoint only supports GET requests", http.StatusBadRequest)
+		return
+	}
+
 	// Traverse the entire bucket and fetch the contents.
 	contents, err := h.bucket.FetchAllArtwork()
 	if err != nil {
@@ -82,6 +87,6 @@ func (h *BucketHandler) replaceExistingFileHandler(w http.ResponseWriter, r *htt
 
 // RegisterRoutes registers handlers for all of the routes that BucketHandler supports.
 func (h *BucketHandler) RegisterRoutes(router *http.ServeMux) {
-	router.HandleFunc("/bucketContents", h.bucketContentsHandler)
+	router.HandleFunc("/bucket", h.getContentsHandler)
 	router.HandleFunc("/replaceExistingFile", h.replaceExistingFileHandler)
 }
