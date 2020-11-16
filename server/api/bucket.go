@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/Art-Amatours/Many-Voices/bucket"
 )
@@ -35,48 +36,28 @@ func (h *BucketHandler) getContentsHandler(w http.ResponseWriter, r *http.Reques
 	constructAndSendResponse(w, contents)
 }
 
-// ReplaceExistingJSONFileRequestBody represents the structure of the request body for a hit to the
-// POST /replaceExistingFile endpoint.
-type ReplaceExistingJSONFileRequestBody struct {
-	ObjectPath string      `json:"objectPath"`
-	Content    interface{} `json:"content"`
-}
-
-// replaceExistingFileHandler handles POST requests on the "/replaceExistingFile" route.
-func (h *BucketHandler) replaceExistingFileHandler(w http.ResponseWriter, r *http.Request) {
+// postNewObjectHandler handles POST requests on the "/bucket/:objectPath" route.
+func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "This endpoint only supports POST requests", http.StatusBadRequest)
 		return
 	}
 
-	// Extract request body into rb (request body) struct.
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-
-	var rb ReplaceExistingJSONFileRequestBody
-	err := decoder.Decode(&rb)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	if rb.ObjectPath == "" {
-		http.Error(w, "objectPath field must be present in request body", http.StatusBadRequest)
-		return
-	}
-	if rb.Content == nil {
-		http.Error(w, "content field must be present in request body", http.StatusBadRequest)
-		return
-	}
-
 	// Turn payload into a "file" (slice of bytes).
-	file, err := json.MarshalIndent(rb.Content, "", " ")
+	file, err := json.MarshalIndent(r.Body, "", " ")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	// Extract object path from URI.
+	//
+	// TODO: validate URI structure. We aren't checking that the provided object path in the URI is
+	// present, much less valid.
+	objectPath := strings.TrimPrefix(r.URL.Path, "/bucket")
 
 	// Send that file off to the S3 bucket.
-	err = h.bucket.ReplaceExistingJSONFile(rb.ObjectPath, file)
+	err = h.bucket.ReplaceExistingJSONFile(objectPath, file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -88,5 +69,5 @@ func (h *BucketHandler) replaceExistingFileHandler(w http.ResponseWriter, r *htt
 // RegisterRoutes registers handlers for all of the routes that BucketHandler supports.
 func (h *BucketHandler) RegisterRoutes(router *http.ServeMux) {
 	router.HandleFunc("/bucket", h.getContentsHandler)
-	router.HandleFunc("/replaceExistingFile", h.replaceExistingFileHandler)
+	router.HandleFunc("/bucket/", h.postNewObjectHandler)
 }
