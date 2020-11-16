@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -48,4 +49,18 @@ func (a *API) ListenOnEndpoints(handlers []RouteHandler) {
 	log.Printf("Listening on port %d....\n", a.port)
 	portAddr := fmt.Sprintf(":%d", a.port)
 	log.Fatal(http.ListenAndServe(portAddr, a.router))
+}
+
+// constructAndSendResponse adds important, common headers to endpoint responses, and marshals the
+// provided response body into JSON.
+func constructAndSendResponse(w http.ResponseWriter, body interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+
+	err := json.NewEncoder(w).Encode(body)
+	if err != nil {
+		errCode := http.StatusInternalServerError
+		errMsg := fmt.Sprintf("Failed to encode response as JSON: %s", err.Error())
+		http.Error(w, errMsg, errCode)
+		return
+	}
 }
