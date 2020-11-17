@@ -3,6 +3,7 @@ import {
   Animated,
   Dimensions,
   Easing,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -131,10 +132,8 @@ const styles = StyleSheet.create({
     borderRightColor: 'black',
   },
   skip: {
-    width: 28,
-    height: 28,
-    borderRadius: 28 / 2,
-    backgroundColor: 'black',
+    width: 36,
+    height: 36,
   },
 });
 
@@ -169,16 +168,6 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
     }
     
   }
-  
-  // props.currentSound.setOnPlaybackStatusUpdate(async (status) => {
-  //   try {
-  //     if(status.isLoaded) {
-  //       setPositionMillis(status.positionMillis);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error getting sound status")
-  //   }
-  // });
 
   const handlebarTapHandler = () => {
     if (up) {
@@ -237,9 +226,13 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               <Text style={styles.subtitle}> {props.critique.critic}</Text>
             </View>
             <View style={styles.row}>
-              <TouchableOpacity style={styles.skip} onPress = {() => changeAudioPosition(-15000, props.currentSound)}/>
+              <TouchableOpacity onPress = {() => changeAudioPosition(-15000, props.currentSound)}>
+                <Image style = {styles.skip} source={require('../../assets/icons/baseline_replay_black_48dp.png')} />
+              </TouchableOpacity>
               {playpause}
-              <TouchableOpacity style={styles.skip} onPress = {() => changeAudioPosition(15000, props.currentSound)} />
+              <TouchableOpacity onPress = {() => changeAudioPosition(15000, props.currentSound)} >
+                <Image style = {styles.skip} source={require('../../assets/icons/baseline_forward_black_48dp.png')} />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={[{ opacity: up ? 1 : 0 }, styles.expanded]}>

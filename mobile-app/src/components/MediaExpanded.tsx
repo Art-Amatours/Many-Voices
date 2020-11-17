@@ -83,7 +83,7 @@ const MediaExpanded: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   const [positionMillis, setPositionMillis] = useState(0);
   
   props.currentSound.setOnPlaybackStatusUpdate((status) => {
-    // try {
+    try {
       if(status.isLoaded) {
         let seconds = Math.floor(status.positionMillis / 1000);
         let minutes = seconds - (seconds % 60);
@@ -100,10 +100,10 @@ const MediaExpanded: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
         minutes /= 60;
         setDuration(minutes + ":" + ((seconds > 9)? "" : "0") + seconds);
       }
-    // } catch (error) {
-    //   console.log("Error getting sound status")
-    //   throw(error)
-    // }
+    } catch (error) {
+      console.log("Error getting sound status")
+      throw(error)
+    }
   });
 
 
@@ -113,9 +113,6 @@ const MediaExpanded: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
         <View style={[styles.container, styles.col]}>
           <View style={[styles.row, { alignItems: 'center', height: 15
          }]}>
-            {/* <View style={[styles.lineLeft, { width: '' + slider + '%' }]} />
-            <View style={[styles.lineRight, { width: '' + (100-slider) + '%' }]} />
-            <View style={[styles.circle, { left: '' + slider + '%' }]} /> */}
             <Slider
               
               style={{width: '100%', height: 40, position:'absolute'}}
@@ -127,7 +124,7 @@ const MediaExpanded: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               value = { positionMillis }
               onValueChange = { (value) => { 
                 try {
-                // setAudioPosition(value, props.currentSound);
+                setAudioPosition(value, props.currentSound);
               } catch (error) {
                 console.log("Error Scrubbing Audio");
               }
