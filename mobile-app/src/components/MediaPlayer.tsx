@@ -26,6 +26,25 @@ async function pause(currentSound: Audio.Sound) {
   currentSound.pauseAsync();
 }
 
+async function changeAudioPosition(
+  change: number,
+  sound: Audio.Sound
+) {
+  try {
+    const status = await sound.getStatusAsync();
+    while(status.isLoaded == false);
+    let new_time = status.positionMillis + change;
+    if (new_time < 0) {
+      new_time = 0;
+    } else if(new_time > (status.durationMillis?? 0)) {
+      new_time = status.durationMillis?? 0;
+    }
+    await sound.setPositionAsync(status.positionMillis + change);
+  } catch (error) {
+    console.log('Oh noooooooooooo');
+  }
+}
+
 // Styles.
 
 const borderRadius = 24;
@@ -150,6 +169,16 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
     }
     
   }
+  
+  // props.currentSound.setOnPlaybackStatusUpdate(async (status) => {
+  //   try {
+  //     if(status.isLoaded) {
+  //       setPositionMillis(status.positionMillis);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error getting sound status")
+  //   }
+  // });
 
   const handlebarTapHandler = () => {
     if (up) {
@@ -208,9 +237,9 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               <Text style={styles.subtitle}> {props.critique.critic}</Text>
             </View>
             <View style={styles.row}>
-              <TouchableOpacity style={styles.skip} />
+              <TouchableOpacity style={styles.skip} onPress = {() => changeAudioPosition(-15000, props.currentSound)}/>
               {playpause}
-              <TouchableOpacity style={styles.skip} />
+              <TouchableOpacity style={styles.skip} onPress = {() => changeAudioPosition(15000, props.currentSound)} />
             </View>
           </View>
           <View style={[{ opacity: up ? 1 : 0 }, styles.expanded]}>
