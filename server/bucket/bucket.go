@@ -322,3 +322,16 @@ func (b *Bucket) ReplaceExistingJSONFile(objectPath string, file []byte) error {
 
 	return nil
 }
+
+// DeleteFile deletes the file at the provided object path in the S3 bucket.
+func (b *Bucket) DeleteFile(objectPath string) error {
+	_, err := b.svc.DeleteObject(&s3.DeleteObjectInput{
+		Bucket: aws.String(b.name),
+		Key:    aws.String(objectPath),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to delete %s from bucket: %v", objectPath, err)
+	}
+
+	return nil
+}
