@@ -39,13 +39,19 @@ func (h *BucketHandler) getContentsHandler(w http.ResponseWriter, r *http.Reques
 	constructAndSendResponse(w, contents)
 }
 
+func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodPost:
+		h.postNewObjectHandler(w, r)
+	case http.MethodDelete:
+		h.deleteObjectHandler(w, r)
+	default:
+		http.Error(w, "This endpoint only supports POST and DELETE requests", http.StatusBadRequest)
+	}
+}
+
 // postNewObjectHandler handles POST requests on the "/bucket/:objectPath" route.
 func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "This endpoint only supports POST requests", http.StatusBadRequest)
-		return
-	}
-
 	// Turn payload into a "file" (slice of bytes).
 	var requestBody interface{}
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
@@ -75,8 +81,25 @@ func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// deleteObjectHandler handles DELETE requests on the "/bucket/:objectPath" route.
+func (h *BucketHandler) deleteObjectHandler(w http.ResponseWriter, r *http.Request) {
+	// Extract object path from URI.
+	//
+	// TODO: validate URI structure. We aren't checking that the provided object path in the URI is
+	// present, much less valid.
+	objectPath := strings.TrimPrefix(r.URL.Path, resourcePrefix)
+
+	err := h.bucket.DeleteFile(objectPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // RegisterRoutes registers handlers for all of the routes that BucketHandler supports.
 func (h *BucketHandler) RegisterRoutes(router *http.ServeMux) {
 	router.HandleFunc(resourcePrefix, h.getContentsHandler)
-	router.HandleFunc(resourcePrefix+"/", h.postNewObjectHandler)
+	router.HandleFunc(resourcePrefix+"/", h.objectSubResourceHandler)
 }
