@@ -37,7 +37,7 @@ const AppNavigator: React.FC = () => (
         component={DetailsScreen}
         options={({ route }) => ({
           title: route.params.title,
-          headerRight: () => infoButton(route.params.title)
+          headerRight: () => infoButton('Info')
         })}
       />
       <Stack.Screen
