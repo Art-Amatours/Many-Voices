@@ -7,7 +7,7 @@ A more interactive and customizable alternative to existing audio tours in museu
 </p>
 
 ## Environment Setup
-=
+
 ### Prerequisites for Installation and Running
 
 1. Install Node.js
@@ -26,26 +26,26 @@ A more interactive and customizable alternative to existing audio tours in museu
    - Follow the [instructions in the server/ dir](server/README.md)
 
 ### Dependent Libraries
-'react-redux'
-'redux'
-'@react-native-community/slider'
-'expo-av'
-'react-native-gesture-handler'
-'@react-navigation/native'
-'@react-navigation/stack'
-'expo-constants'
-'redux-thunk'
+	-'react-redux'
+	-'redux'
+	-'@react-native-community/slider'
+	-'expo-av'
+	-'react-native-gesture-handler'
+	-'@react-navigation/native'
+	-'@react-navigation/stack'
+	-'expo-constants'
+	-'redux-thunk'
 
 
 ### Mobile App Setup
-To download these dependencies use commands:
+	To download these dependencies use commands:
 
-cd mobile-app
-yarn intall dependent_library_name
+	cd mobile-app
+	yarn intall dependent_library_name
 
-Ex) yarn intall react-redux
-Ex) yarn intall @react-native-community/slider
-*Note: Do not include quotation marks in the command
+	Ex) yarn intall react-redux
+	Ex) yarn intall @react-native-community/slider
+	*Note: Do not include quotation marks in the command
 
 
 ### Server Setup
@@ -65,14 +65,14 @@ Follow the [instructions in the server/ dir](server/README.md)
 
 ## Trouble Shooting -- Common Problems & Solutions
 
-PROBLEM: Application is taking an excessive time to load when opening
-COMMON SOLUTION: Make sure you are running Go server
+	PROBLEM: Application is taking an excessive time to load when opening
+	COMMON SOLUTION: Make sure you are running Go server
 
-PROBLEM: If Expo is not starting 
-COMMON SOLUTION: Make sure you are running Expo in mobile-app folder
+	PROBLEM: If Expo is not starting 
+	COMMON SOLUTION: Make sure you are running Expo in mobile-app folder
 
-PROBLEM: Expo is displaying "package" related errors while trying to start 
-COMMON SOLUTION: Run command "yarn"
+	PROBLEM: Expo is displaying "package" related errors while trying to start 
+	COMMON SOLUTION: Run command "yarn"
 
 ## Motivation
 
