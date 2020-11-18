@@ -322,3 +322,30 @@ func (b *Bucket) ReplaceExistingJSONFile(objectPath string, file []byte) error {
 
 	return nil
 }
+
+// DeleteFile deletes the file at the provided object path in the S3 bucket.
+func (b *Bucket) DeleteFile(objectPath string) error {
+	// List all objects whose absolute paths have the prefix: objectPath. If we're deleting one
+	// file, then this should only return one object path; if we're deleting a directory, then this
+	// should list all objects in that directory.
+	objects, err := b.svc.ListObjectsV2(&s3.ListObjectsV2Input{
+		Bucket: aws.String(b.name),
+		Prefix: aws.String(objectPath),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to list %s in bucket: %v", objectPath, err)
+	}
+
+	// Remove each object that we found.
+	for _, object := range objects.Contents {
+		_, err := b.svc.DeleteObject(&s3.DeleteObjectInput{
+			Bucket: aws.String(b.name),
+			Key:    object.Key,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to delete %s from bucket: %v", objectPath, err)
+		}
+	}
+
+	return nil
+}
