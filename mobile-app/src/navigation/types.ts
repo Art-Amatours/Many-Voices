@@ -3,4 +3,7 @@ export type StackParamList = {
   Details: {
     title: string;
   };
+  Info: {
+    title: string;
+  };
 };

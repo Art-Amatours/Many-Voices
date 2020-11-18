@@ -5,7 +5,8 @@ import DetailsScreen from '../screens/DetailsScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { StackParamList } from './types';
 import { createStackNavigator } from '@react-navigation/stack';
-import { navigationRef } from './RootNavigation';
+import { navigationRef, navigate } from './RootNavigation';
+import InfoScreen from '../screens/InfoScreen';
 
 const Stack = createStackNavigator<StackParamList>();
 
@@ -15,7 +16,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const infoButton = <View style={ styles.infoButton }><Button onPress={()=>null} title="Info"/></View>;
+const infoButton = (title: string) => (<View style={ styles.infoButton }>
+  <Button onPress={()=>{
+    navigate('Info', {
+      title: title
+    });
+    }} title="Info"/>
+</View>);
 
 const AppNavigator: React.FC = () => (
   <NavigationContainer ref={navigationRef}>
@@ -30,7 +37,14 @@ const AppNavigator: React.FC = () => (
         component={DetailsScreen}
         options={({ route }) => ({
           title: route.params.title,
-          headerRight: () => infoButton
+          headerRight: () => infoButton('Info')
+        })}
+      />
+      <Stack.Screen
+        name="Info"
+        component={InfoScreen}
+        options={({ route }) => ({
+          title: route.params.title
         })}
       />
     </Stack.Navigator>
