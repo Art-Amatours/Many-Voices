@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { configureStore } from './store';
 import ArtworkScreen from './screens/Artwork/ArtworkScreen';
 import CreateNewArtworkScreen from './screens/CreateNewArtwork/CreateNewArtworkScreen';
+import Header from './components/Header/Header';
 
 const store = configureStore();
 
@@ -14,6 +15,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+        <Header />
         <Switch>
           <Route exact path="/" component={ArtworkScreen} />
           <Route exact path="/new" component={CreateNewArtworkScreen} />

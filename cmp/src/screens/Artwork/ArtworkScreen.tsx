@@ -3,7 +3,6 @@ import './styles.css';
 import { connect, ConnectedProps } from 'react-redux';
 import { fetchAllArtworkFromCloud } from '../../store/artwork/actions';
 import GalleryView from '../../views/GalleryView/GalleryView';
-import Header from '../../components/Header/Header';
 
 // Change the host that we hit to make API calls depending on if we're running in dev or prod.
 let host: string;
@@ -29,12 +28,7 @@ const ArtworkScreen: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
   // store.
   useEffect(() => props.fetchAllArtworkFromCloud(), [props]);
 
-  return (
-    <>
-      <Header />
-      <GalleryView />
-    </>
-  );
+  return <GalleryView />;
 };
 
 export default connector(ArtworkScreen);
