@@ -1,20 +1,13 @@
-import { AppThunk } from '..';
 import { Dispatch } from 'redux';
-import { Audio } from 'expo-av';
+import { AppThunk } from '..';
 import {
   Artwork,
   ArtworkActionTypes,
+  FETCH_ALL_ARTWORK_FROM_CLOUD,
   SET_LOADING_ERROR,
   SET_SEARCH_QUERY,
-  FETCH_ALL_ARTWORK_FROM_CLOUD,
-  SET_CURRENT_ARTWORK,
-  Critique,
-  SET_CURRENT_CRITIQUE,
-  SET_IS_PAUSED,
-  SET_CURRENT_SOUND,
 } from './types';
 
-// Action creator for the SET_LOADING_ERROR action type.
 export function setLoadingError(to: boolean): ArtworkActionTypes {
   return {
     type: SET_LOADING_ERROR,
@@ -29,33 +22,6 @@ export function setSearchQuery(to: string): ArtworkActionTypes {
   };
 }
 
-export function setCurrentArtwork(to: Artwork): ArtworkActionTypes {
-  return {
-    type: SET_CURRENT_ARTWORK,
-    payload: to,
-  };
-}
-
-export function setCurrentCritique(to: Critique): ArtworkActionTypes {
-  return {
-    type: SET_CURRENT_CRITIQUE,
-    payload: to,
-  };
-}
-export function setIsPaused(to: boolean): ArtworkActionTypes {
-  return {
-    type: SET_IS_PAUSED,
-    payload: to,
-  };
-}
-export function setCurrentSound(to: Audio.Sound): ArtworkActionTypes {
-  return {
-    type: SET_CURRENT_SOUND,
-    payload: to,
-  };
-}
-
-// Action creator used by the fetchAllArtworkFromCloud() func.
 function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
   return {
     type: FETCH_ALL_ARTWORK_FROM_CLOUD,
@@ -67,6 +33,7 @@ function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
 // depending on the response from that API call.
 export function fetchAllArtworkFromCloud(host: string): AppThunk {
   return (dispatch: Dispatch<ArtworkActionTypes>): void => {
+    console.log(`${host}/bucket`);
     fetch(`${host}/bucket`)
       .then((response) =>
         response.json().then((json) => ({
@@ -82,6 +49,7 @@ export function fetchAllArtworkFromCloud(host: string): AppThunk {
           dispatch(addAllArtworkFromCloud(json));
         }
       })
+      // eslint-disable-next-line no-console
       .catch((err) => console.error(err)); // TODO: better error handling.
   };
 }

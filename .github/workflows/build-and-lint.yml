@@ -20,15 +20,28 @@ jobs:
         with:
           node-version: 12
 
-      # ESLint and Prettier must be in `package.json`
-      - name: Install Node.js dependencies
+      # ESLint and Prettier must be in `mobile-app/package.json`
+      - name: Install Node.js dependencies for mobile app
         working-directory: ./mobile-app
         run: npm install
 
-      - name: Build proj
+      - name: Build mobile app
         working-directory: ./mobile-app
         run: npm run build
 
-      - name: Run linter
+      - name: Run linter on mobile app
         working-directory: ./mobile-app
+        run: npm run lint
+
+      # ESLint and Prettier must be in `cmp/package.json`
+      - name: Install Node.js dependencies for cmp
+        working-directory: ./cmp
+        run: npm install
+
+      - name: Run formatter on cmp
+        working-directory: ./cmp
+        run: npm run format
+
+      - name: Run linter on cmp
+        working-directory: ./cmp
         run: npm run lint
