@@ -42,7 +42,13 @@ func (h *BucketHandler) getContentsHandler(w http.ResponseWriter, r *http.Reques
 func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		h.postNewObjectHandler(w, r)
+		switch r.Header.Get("Content-Type") {
+		case "application/json":
+			h.postNewJSONObjectHandler(w, r)
+		default:
+			http.Error(w, "This POST endpoint expects the Content-Type header to either be "+
+				"application/json or multipart/form-data", http.StatusBadRequest)
+		}
 	case http.MethodDelete:
 		h.deleteObjectHandler(w, r)
 	default:
@@ -50,8 +56,9 @@ func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.
 	}
 }
 
-// postNewObjectHandler handles POST requests on the "/bucket/:objectPath" route.
-func (h *BucketHandler) postNewObjectHandler(w http.ResponseWriter, r *http.Request) {
+// postNewJSONObjectHandler handles POST requests on the "/bucket/:objectPath" route that have the
+// Content-Type=application/json header set.
+func (h *BucketHandler) postNewJSONObjectHandler(w http.ResponseWriter, r *http.Request) {
 	// Turn payload into a "file" (slice of bytes).
 	var requestBody interface{}
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
