@@ -105,6 +105,7 @@ func (s *Server) replaceExistingFileHandler(w http.ResponseWriter, r *http.Reque
 // constructAndSendResponse adds important, common headers to endpoint responses, and marshals the
 // provided response body into JSON.
 func constructAndSendResponse(w http.ResponseWriter, body interface{}) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
 	err := json.NewEncoder(w).Encode(body)

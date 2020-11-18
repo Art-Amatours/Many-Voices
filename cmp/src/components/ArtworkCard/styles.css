@@ -1,0 +1,59 @@
+.artwork-card {
+  display: flex;
+  flex-direction: column;
+  max-width: 350px;
+}
+
+.info {
+  padding: 12px;
+}
+
+.info > *:not(:last-child) {
+  margin-bottom: 0.25rem;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-row > *:not(.title) {
+  font-size: 0.8rem;
+}
+
+.tag-row {
+  display: flex;
+  flex-flow: row wrap;
+  margin-left: -0.1rem;
+  margin-bottom: -0.1rem;
+}
+
+.tag-row > * {
+  margin: 0.1rem;
+  font-size: 0.8rem;
+}
+
+.title {
+  font-weight: bold;
+  margin-right: 0.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.num-critiques {
+  white-space: nowrap;
+}
+
+.author {
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+img {
+  width: 100%;
+}

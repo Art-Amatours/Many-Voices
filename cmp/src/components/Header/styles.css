@@ -1,0 +1,33 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 1em;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.header-label {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.header-button-section {
+  display: flex;
+}
+
+.header-button {
+  margin-left: 0.25rem;
+  padding: 1em 1.25em;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.header-button:hover {
+  cursor: pointer;
+  background: rgba(128, 128, 128, 0.2);
+}
+
+.header-button:focus {
+  outline: none;
+  background: rgba(128, 128, 128, 0.2);
+}
