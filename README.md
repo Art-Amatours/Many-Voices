@@ -7,8 +7,8 @@ A more interactive and customizable alternative to existing audio tours in museu
 </p>
 
 ## Environment Setup
-
-### Prereqs
+=
+### Prerequisites for Installation and Running
 
 1. Install Node.js
    - macOS
@@ -25,13 +25,33 @@ A more interactive and customizable alternative to existing audio tours in museu
 1. Install [Go](https://golang.org)
    - Follow the [instructions in the server/ dir](server/README.md)
 
+### Dependent Libraries
+'react-redux'
+'redux'
+'@react-native-community/slider'
+'expo-av'
+'react-native-gesture-handler'
+'@react-navigation/native'
+'@react-navigation/stack'
+'expo-constants'
+'redux-thunk'
+
+
+### Mobile App Setup
+To download these dependencies use commands:
+
+cd mobile-app
+yarn intall dependent_library_name
+
+Ex) yarn intall react-redux
+Ex) yarn intall @react-native-community/slider
+*Note: Do not include quotation marks in the command
+
+
 ### Server Setup
 
 Follow the [instructions in the server/ dir](server/README.md)
 
-### Mobile App Setup
-
-Pull in required dependencies with `$ cd mobile-app && yarn`
 
 ## Running Locally
 
@@ -41,6 +61,18 @@ Pull in required dependencies with `$ cd mobile-app && yarn`
    - Expo will launch in a new browser tab
    - You'll be prompted to spin up a device simulator, or launch the app on a physical device
      - You'll need the official Expo app installed on your device if you prefer not to use a simulator
+
+
+## Trouble Shooting -- Common Problems & Solutions
+
+PROBLEM: Application is taking an excessive time to load when opening
+COMMON SOLUTION: Make sure you are running Go server
+
+PROBLEM: If Expo is not starting 
+COMMON SOLUTION: Make sure you are running Expo in mobile-app folder
+
+PROBLEM: Expo is displaying "package" related errors while trying to start 
+COMMON SOLUTION: Run command "yarn"
 
 ## Motivation
 
