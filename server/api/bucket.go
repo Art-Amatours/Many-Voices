@@ -86,7 +86,7 @@ func (h *BucketHandler) postNewJSONObjectHandler(w http.ResponseWriter, r *http.
 	objectPath := strings.TrimPrefix(r.URL.Path, resourcePrefix)
 
 	// Send that file off to the S3 bucket.
-	err = h.bucket.ReplaceExistingJSONFile(objectPath, file)
+	err = h.bucket.ReplaceExistingFile(objectPath, file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -121,7 +121,7 @@ func (h *BucketHandler) postNewFileObjectHandler(w http.ResponseWriter, r *http.
 	objectPath := strings.TrimPrefix(r.URL.Path, resourcePrefix)
 
 	// Send that file off to the S3 bucket.
-	err = h.bucket.ReplaceExistingJSONFile(objectPath, buffer.Bytes())
+	err = h.bucket.ReplaceExistingFile(objectPath, buffer.Bytes())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

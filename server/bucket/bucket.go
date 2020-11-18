@@ -308,9 +308,9 @@ func addImage(fileURL string, artworkList []*ArtworkInfo, curArtworkIndex int) {
 	artworkList[curArtworkIndex].ImageURLs = append(curArtworkImagesList, fileURL)
 }
 
-// ReplaceExistingJSONFile replaces the file at the provided object path in the S3 bucket with a new
+// ReplaceExistingFile replaces the file at the provided object path in the S3 bucket with a new
 // one.
-func (b *Bucket) ReplaceExistingJSONFile(objectPath string, file []byte) error {
+func (b *Bucket) ReplaceExistingFile(objectPath string, file []byte) error {
 	_, err := b.uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(b.name),
 		Key:    aws.String(objectPath),
