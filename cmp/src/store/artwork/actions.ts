@@ -33,7 +33,8 @@ function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
 // depending on the response from that API call.
 export function fetchAllArtworkFromCloud(host: string): AppThunk {
   return (dispatch: Dispatch<ArtworkActionTypes>): void => {
-    fetch(`${host}/bucketContents`)
+    console.log(`${host}/bucket`);
+    fetch(`${host}/bucket`)
       .then((response) =>
         response.json().then((json) => ({
           status: response.status,
