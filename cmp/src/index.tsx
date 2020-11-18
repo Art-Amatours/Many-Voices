@@ -2,16 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { configureStore } from './store';
+import ArtworkScreen from './screens/Artwork/ArtworkScreen';
 
 const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ArtworkScreen />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),

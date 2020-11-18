@@ -1,4 +1,5 @@
 import React from 'react';
+import './GalleryView.css';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../store';
 import ArtworkCard from '../../components/ArtworkCard/ArtworkCard';
