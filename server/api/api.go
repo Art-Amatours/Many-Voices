@@ -55,6 +55,7 @@ func (a *API) ListenOnEndpoints(handlers []RouteHandler) {
 // provided response body into JSON.
 func constructAndSendResponse(w http.ResponseWriter, body interface{}) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	err := json.NewEncoder(w).Encode(body)
 	if err != nil {
