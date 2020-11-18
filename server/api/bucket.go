@@ -87,7 +87,7 @@ func (h *BucketHandler) deleteObjectHandler(w http.ResponseWriter, r *http.Reque
 	//
 	// TODO: validate URI structure. We aren't checking that the provided object path in the URI is
 	// present, much less valid.
-	objectPath := strings.TrimPrefix(r.URL.Path, resourcePrefix)
+	objectPath := strings.TrimPrefix(r.URL.Path+"/", resourcePrefix)
 
 	err := h.bucket.DeleteFile(objectPath)
 	if err != nil {
