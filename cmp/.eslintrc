@@ -1,0 +1,30 @@
+{
+  "extends": ["airbnb-typescript-prettier"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    // This may lead to more verbose code, but being able to easily see that a variable is
+    // coming from props makes code more readable imo.
+    "react/destructuring-assignment": 0,
+    // Prevent "file extension missing" errors with Typescript files.
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
+  },
+  "settings": {
+    // Prevent "unable to resolve path to module" errors.
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    }
+  }
+}
