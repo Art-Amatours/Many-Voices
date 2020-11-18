@@ -42,7 +42,7 @@ async function changeAudioPosition(
     }
     await sound.setPositionAsync(status.positionMillis + change);
   } catch (error) {
-    console.log('Oh noooooooooooo');
+    console.log('Change Audio Position Error: ' + error);
   }
 }
 

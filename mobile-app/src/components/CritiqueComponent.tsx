@@ -35,7 +35,7 @@ async function playAudio(
 
     setCurrentSound(sound);
   } catch (error) {
-    console.log('Oh noooooooooooo');
+    console.log('Play Audio Error: ' + error);
   }
 }
 
@@ -60,7 +60,7 @@ async function setAudioDuration(
     }
     await sound.unloadAsync();
   } catch (error) {
-    console.log('Oh noooooooooooo');
+    console.log('Set Audio Duration Error: ' + error);
   }
 }
 

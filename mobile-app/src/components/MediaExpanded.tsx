@@ -60,7 +60,7 @@ async function setAudioPosition(
   try {
     await sound.setPositionAsync(position);
   } catch (error) {
-    console.log('Oh noooooooooooo');
+    console.log('Set Audio Position Error: ' + error);
   }
 }
 
