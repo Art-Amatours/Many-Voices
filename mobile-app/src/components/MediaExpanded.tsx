@@ -62,6 +62,7 @@ async function setAudioPosition(
   } catch (error) {
     console.log('Set Audio Position Error: ' + error);
   }
+  return Promise.resolve();
 }
 
 // Redux goodness.
