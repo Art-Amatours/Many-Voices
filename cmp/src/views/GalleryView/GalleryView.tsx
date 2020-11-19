@@ -2,6 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../store';
 import ArtworkCard from '../../components/ArtworkCard/ArtworkCard';
+import EditPopup from '../../components/EditPopup/EditPopup';
 
 // Redux goodness.
 
@@ -28,6 +29,7 @@ const GalleryView: React.FC<PropsFromRedux> = (props) => (
             tagData={artwork.tags}
           />
         ))}
+        <EditPopup artwork={props.artworkList[0]} />
       </div>
     )}
   </>
