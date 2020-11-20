@@ -41,11 +41,10 @@ A more interactive and customizable alternative to existing audio tours in museu
 	To download these dependencies use commands:
 
 	cd mobile-app
-	yarn intall dependent_library_name
-
-	Ex) yarn intall react-redux
-	Ex) yarn intall @react-native-community/slider
-	*Note: Do not include quotation marks in the command
+	yarn 
+	
+	*NOTE: Using the "yarn" command will install all dependent libraries automatically for you. You will 
+	not have to worry about installing each dependent library individually.
 
 
 ### Server Setup
@@ -59,8 +58,11 @@ Follow the [instructions in the server/ dir](server/README.md)
    - More details in the [instructions in the server/ dir](server/README.md)
 1. In another shell, run `$ cd mobile-app && expo start`
    - Expo will launch in a new browser tab
-   - You'll be prompted to spin up a device simulator, or launch the app on a physical device
-     - You'll need the official Expo app installed on your device if you prefer not to use a simulator
+   - You'll be prompted to spin up a device simulator, or launch the app on a physical device using a QR code
+   	you can scan with your phone
+     - You'll need the official Expo app installed on your device if you prefer not to use a simulator.
+     This app is located in the Apple App Store and in the Google Play Store.
+     
 
 
 ## Trouble Shooting -- Common Problems & Solutions
@@ -68,11 +70,12 @@ Follow the [instructions in the server/ dir](server/README.md)
 	PROBLEM: Application is taking an excessive time to load when opening
 	COMMON SOLUTION: Make sure you are running Go server
 
-	PROBLEM: If Expo is not starting 
+	PROBLEM: If Expo is not starting after running "expo start" in terminal
 	COMMON SOLUTION: Make sure you are running Expo in mobile-app folder
 
-	PROBLEM: Expo is displaying "package" related errors while trying to start 
+	PROBLEM: Expo is displaying "package" related errors while trying to start after running "expo start" 
 	COMMON SOLUTION: Run command "yarn"
+	
 
 ## Motivation
 
