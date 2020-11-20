@@ -16,14 +16,15 @@ A more interactive and customizable alternative to existing audio tours in museu
    - Windows
      - Use the [official installer](https://nodejs.org/en/download/)
      - Or `$ choco install nodejs`
-1. Install yarn _(Optional, but recommended)_
+2. Install yarn _(Optional, but recommended)_
    - macOS
      - `$ brew update && brew install yarn`
    - Windows
      - Use the [official installer](https://classic.yarnpkg.com/en/docs/install/#windows-stable)
      - Or `$ choco install yarn`
-1. Install [Go](https://golang.org)
+3. Install [Go](https://golang.org)
    - Follow the [instructions in the server/ dir](server/README.md)
+
 
 ### Dependent Libraries
 	-'react-redux'
@@ -56,7 +57,9 @@ Follow the [instructions in the server/ dir](server/README.md)
 
 1. In one shell, run `$ cd server && go run *.go`
    - More details in the [instructions in the server/ dir](server/README.md)
-1. In another shell, run `$ cd mobile-app && expo start`
+   - Leave this shell running in the background. It will need to be running for the server to be running.
+   
+2. In another shell, run `$ cd mobile-app && expo start`
    - Expo will launch in a new browser tab
    - You'll be prompted to spin up a device simulator, or launch the app on a physical device using a QR code
    	you can scan with your phone
@@ -69,6 +72,7 @@ Follow the [instructions in the server/ dir](server/README.md)
 
 	PROBLEM: Application is taking an excessive time to load when opening
 	COMMON SOLUTION: Make sure you are running Go server
+	COMMON SOLUTION: Make sure you have not closed the shell terminal running the Go server
 
 	PROBLEM: If Expo is not starting after running "expo start" in terminal
 	COMMON SOLUTION: Make sure you are running Expo in mobile-app folder
@@ -77,8 +81,27 @@ Follow the [instructions in the server/ dir](server/README.md)
 	COMMON SOLUTION: Run command "yarn"
 	
 
-## Motivation
 
-Museums and art galleries are effective and interesting outlets to expose differing populations and cultures to new and unfamiliar perspectives. However, if visitors do not arrive with an educational background in art or previous experience with the topics of the pieces, it can be difficult to personally grasp the artworks on display. Tours have been developed in almost all modern museums to offer guidance on this problem throughout the museum, but these tours are generalized and time limited in order to handle large amounts of visitors each day. Because you’re only hearing from one source, it’s easy to let your own opinions about how a piece affects you are significantly swayed by that source. If a particular piece affects you deeply, and you’d like to soak it in for even just a bit longer, the audio tour doesn’t stop for you. If you choose not to stay in sync with the tour, you risk missing out on hearing about later pieces that may move you even more. In short, the audio tour is a great idea, but needs to be more flexible. It should let museum visitors experience the artworks on display however they please.
+## Release Notes 
+	Version Number: 1.0
+	New Features Present: 
+		Application Side:
+			- App pulls data from backend and displays scrollable list of artworks
+			- User can search app with keywords to find specific artworks
+			- User can select artwork to see its critiques and info screen
+			- User can play audio critiques
+			- User can view and interact with audio bar throughout application 
+			- User can skip/backtrack 10 seconds in audio critique
+			- User can use audio scrubber to advance to specific places in audio critique
+			- User can view Info screen on artwork piece
+		Server Side:
+			- Server can contain data for app
+			- Server can be requested to push data to app
+		
+	
+	Known Defects:
+	
+	Previous Defects that Have Been Corrected:
 
-The Many Voices application addresses these concerns by providing users both a diverse body of art critiques to listen to and also the opportunity to add their own critiques as well. Through the application, users search a museum’s art pieces to select specific pieces and view general information as well as a selection of audio critiques on the pieces. The audio critiques are sorted by tag topics such as the perspective of the critique author and the topic of the piece itself. Users can listen to as many or as few critiques for each piece as they want and then can continue throughout the museum to new pieces at their own pace.
+
+
