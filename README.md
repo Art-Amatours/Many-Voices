@@ -25,18 +25,6 @@ A more interactive and customizable alternative to existing audio tours in museu
 3. Install [Go](https://golang.org)
     - Follow the [instructions in the server/ dir](server/README.md)
 
-### Dependent Libraries
-
-- `react-redux`
-- `redux`
-- `@react-native-community/slider`
-- `expo-av`
-- `react-native-gesture-handler`
-- `@react-navigation/native`
-- `@react-navigation/stack`
-- `expo-constants`
-- `redux-thunk`
-
 ### Mobile App Setup
 
 To download these dependencies use commands:
@@ -61,6 +49,57 @@ Follow the [instructions in the server/ dir](server/README.md)
     - Expo will launch in a new browser tab
     - You'll be prompted to spin up a device simulator, or launch the app on a physical device using a QR code you can scan with your phone
         - You'll need the official Expo app installed on your device if you prefer not to use a simulator. This app is located in the Apple App Store and in the Google Play Store.
+
+## Dependencies & External Libraries
+
+### Mobile App
+
+The mobile app uses the following packages from [npm](https://www.npmjs.com):
+
+- `@react-native-community/masked-view`
+- `@react-navigation/native`
+- `@react-navigation/stack`
+- `expo`
+- `expo-av`
+- `expo-constants`
+- `expo-status-bar`
+- `go`
+- `react`
+- `react-dom`
+- `react-native`
+- `react-native-audio-streamer`
+- `react-native-gesture-handler`
+- `react-native-screens`
+- `react-native-sound`
+- `react-native-sound-player`
+- `react-native-track-player`
+- `react-native-web`
+- `react-redux`
+- `redux`
+- `redux-thunk`
+
+### HTTP Server
+
+The HTTP server relies on the following libraries:
+
+- `github.com/aws/aws-sdk-go`
+- `github.com/joho/godotenv`
+
+### Content Management Platform
+
+The content management platform uses the following packages from [npm](https://npmjs.com):
+
+- `@types/jest`
+- `@types/node`
+- `@types/react`
+- `@types/react-dom`
+- `react`
+- `react-dom`
+- `react-redux`
+- `react-scripts`
+- `redux`
+- `redux-thunk`
+- `web-vitals`
 
 ## Trouble Shooting --- Common Problems & Solutions
 
