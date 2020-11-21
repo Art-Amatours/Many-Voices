@@ -129,5 +129,7 @@ The content management platform uses the following packages from [npm](https://n
     - Server can be requested to push data to app
 
 ### Known Defects
+None
 
-### Previous Defects that Have Been Corrected
+### Defects that Have Been Fixed Since Last Release
+None
