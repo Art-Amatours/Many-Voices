@@ -101,17 +101,13 @@ The content management platform uses the following packages from [npm](https://n
 - `redux-thunk`
 - `web-vitals`
 
-## Trouble Shooting --- Common Problems & Solutions
+## Troubleshooting &mdash; Common Problems & Solutions
 
-PROBLEM: Application is taking an excessive time to load when opening
-COMMON SOLUTION: Make sure you are running Go server
-COMMON SOLUTION: Make sure you have not closed the shell terminal running the Go server
-
-PROBLEM: If Expo is not starting after running "expo start" in terminal
-COMMON SOLUTION: Make sure you are running Expo in mobile-app folder
-
-PROBLEM: Expo is displaying "package" related errors while trying to start after running "expo start"
-COMMON SOLUTION: Run command "yarn"
+| Problem | Common Solution |
+| --- | --- |
+| Application is taking an excessive time to load when opening | Make sure you are running the HTTP server in a separate shell or in a background process |
+| Expo is not starting after running `$ expo start` | Make sure you are running Expo in mobile-app folder |
+| Expo is displaying "package" related errors while trying to start after running `$ expo start` | Run `$ yarn` inside the `mobile-app` dir |
 
 ## Release Notes
 
