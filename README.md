@@ -111,21 +111,23 @@ The content management platform uses the following packages from [npm](https://n
 
 ## Release Notes
 
-Version Number: 1.0
-New Features Present:
-    Application Side:
-        - App pulls data from backend and displays scrollable list of artworks
-        - User can search app with keywords to find specific artworks
-        - User can select artwork to see its critiques and info screen
-        - User can play audio critiques
-        - User can view and interact with audio bar throughout application
-        - User can skip/backtrack 10 seconds in audio critique
-        - User can use audio scrubber to advance to specific places in audio critique
-        - User can view Info screen on artwork piece
-    Server Side:
-        - Server can contain data for app
-        - Server can be requested to push data to app
+### Version 1.0
 
-Known Defects:
+### New Features Present
 
-Previous Defects that Have Been Corrected:
+- Application Side:
+    - App pulls data from backend and displays scrollable list of artworks
+    - User can search app with keywords to find specific artworks
+    - User can select artwork to see its critiques and info screen
+    - User can play audio critiques
+    - User can view and interact with audio bar throughout application
+    - User can skip/backtrack 10 seconds in audio critique
+    - User can use audio scrubber to advance to specific places in audio critique
+    - User can view Info screen on artwork piece
+- Server Side:
+    - Server can contain data for app
+    - Server can be requested to push data to app
+
+### Known Defects
+
+### Previous Defects that Have Been Corrected
