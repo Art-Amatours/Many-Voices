@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -32,9 +32,35 @@ async function playAudio(
         isLooping: false,
       },
     );
+
     setCurrentSound(sound);
   } catch (error) {
-    console.log('Oh noooooooooooo');
+    console.log('Play Audio Error: ' + error);
+  }
+}
+
+async function setAudioDuration(
+  url: string,
+  setDuration: React.Dispatch<React.SetStateAction<string>>,
+) {
+  try {
+    const { sound, status } = await Audio.Sound.createAsync(
+      { uri: url },
+      {
+        shouldPlay: false,
+        isLooping: false,
+      },
+    );
+    if (status.isLoaded==true) {
+      let seconds = Math.floor((status.durationMillis?? 0) / 1000);
+      let minutes = seconds - (seconds % 60);
+      seconds %= 60;
+      minutes /= 60;
+      setDuration(minutes + ":" + ((seconds > 9)? "" : "0") + seconds);
+    }
+    await sound.unloadAsync();
+  } catch (error) {
+    console.log('Set Audio Duration Error: ' + error);
   }
 }
 
@@ -111,7 +137,13 @@ interface Props {
 
 const CritiqueComponent: React.FC<Props & PropsFromRedux> = (
   props: Props & PropsFromRedux,
-) => (
+) => {
+
+  const [duration, setDuration] = useState("0:00");
+
+  setAudioDuration(props.critique.audioURL, setDuration);
+
+  return (
   <TouchableOpacity
     style={[styles.container, styles.row]}
     onPress={() => {
@@ -128,12 +160,12 @@ const CritiqueComponent: React.FC<Props & PropsFromRedux> = (
       <Text style={styles.subtitle}>{props.critique.critic}</Text>
     </View>
     <View style={styles.col}>
-      <Text style={[styles.duration, styles.rightAligned]}>{'1:23'}</Text>
+      <Text style={[styles.duration, styles.rightAligned]}>{ duration }</Text>
       <View style={styles.row}>
         <Tag data={props.critique.tags} />
       </View>
     </View>
-  </TouchableOpacity>
-);
+  </TouchableOpacity>)
+}
 
 export default connector(CritiqueComponent);

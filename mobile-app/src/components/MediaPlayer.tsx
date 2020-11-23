@@ -3,6 +3,7 @@ import {
   Animated,
   Dimensions,
   Easing,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -26,6 +27,25 @@ async function pause(currentSound: Audio.Sound) {
   currentSound.pauseAsync();
 }
 
+async function changeAudioPosition(
+  change: number,
+  sound: Audio.Sound
+) {
+  try {
+    const status = await sound.getStatusAsync();
+    while(status.isLoaded == false);
+    let new_time = status.positionMillis + change;
+    if (new_time < 0) {
+      new_time = 0;
+    } else if(new_time > (status.durationMillis?? 0)) {
+      new_time = status.durationMillis?? 0;
+    }
+    await sound.setPositionAsync(status.positionMillis + change);
+  } catch (error) {
+    console.log('Change Audio Position Error: ' + error);
+  }
+}
+
 // Styles.
 
 const borderRadius = 24;
@@ -45,7 +65,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     backgroundColor: '#c7c7cc',
-    borderRadius,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     shadowColor: 'black',
     shadowOpacity: 0.35,
     shadowOffset: { width: 0, height: 0 },
@@ -112,10 +133,8 @@ const styles = StyleSheet.create({
     borderRightColor: 'black',
   },
   skip: {
-    width: 28,
-    height: 28,
-    borderRadius: 28 / 2,
-    backgroundColor: 'black',
+    width: 36,
+    height: 36,
   },
 });
 
@@ -208,9 +227,13 @@ const MediaPlayer: React.FC<PropsFromRedux> = (props: PropsFromRedux) => {
               <Text style={styles.subtitle}> {props.critique.critic}</Text>
             </View>
             <View style={styles.row}>
-              <TouchableOpacity style={styles.skip} />
+              <TouchableOpacity onPress = {() => changeAudioPosition(-15000, props.currentSound)}>
+                <Image style = {styles.skip} source={require('../../assets/icons/baseline_replay_black_48dp.png')} />
+              </TouchableOpacity>
               {playpause}
-              <TouchableOpacity style={styles.skip} />
+              <TouchableOpacity onPress = {() => changeAudioPosition(15000, props.currentSound)} >
+                <Image style = {styles.skip} source={require('../../assets/icons/baseline_forward_black_48dp.png')} />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={[{ opacity: up ? 1 : 0 }, styles.expanded]}>
