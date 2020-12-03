@@ -55,39 +55,14 @@ export function fetchAllArtworkFromCloud(host: string): AppThunk {
 }
 
 export function uploadArtworkToCloud(host: string, artwork: Artwork): void {
-  // console.error(`${host}/bucket/mona-lisa/`); // eslint-disable-line no-console
   const myHeaders = new Headers({
     'Content-Type': 'application/json',
   });
-  // const requestOptions = {
-  //   method: 'POST',
-  //   headers: myHeaders,
-  //   body: JSON.stringify({ title: 'React POST Request Example' }),
-  // };
-  fetch(
-    `${host}/bucket/mona-lisa/test.json`,
-    {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({ title: 'React POST Request Example' }),
-    },
-    // {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   mode: "no-cors",
-    //   body: JSON.stringify({ test: 'Testing' }),
-    // }
-  )
-    // .then((response) => {
-    //   console.error(response);
-    //   response.json().then((json) => ({
-    //     status: response.status,
-    //     json,
-    //   }));
-    // })
+  fetch(`${host}/bucket/newFolder/test.json`, {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify({ title: 'React POST Request Example' }),
+  })
     // eslint-disable-next-line no-console
     .catch((err) => console.error(err)); // TODO: better error handling.
 }

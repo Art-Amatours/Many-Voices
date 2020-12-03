@@ -22,6 +22,7 @@ const GalleryView: React.FC<PropsFromRedux> = (props) => (
       <div className="card-container">
         {props.artworkList.map((artwork) => (
           <ArtworkCard
+            key={artwork.title + artwork.artist}
             title={artwork.title}
             artist={artwork.artist}
             numCritiques={artwork.critiques.length}
