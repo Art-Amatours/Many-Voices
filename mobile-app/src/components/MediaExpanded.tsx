@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   dummyPadding: {
-    paddingTop: 192,
+    paddingTop: 256,
   },
   lineLeft: {
     height: 3,
