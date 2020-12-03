@@ -33,7 +33,7 @@ function addAllArtworkFromCloud(artwork: Artwork[]): ArtworkActionTypes {
 // depending on the response from that API call.
 export function fetchAllArtworkFromCloud(host: string): AppThunk {
   return (dispatch: Dispatch<ArtworkActionTypes>): void => {
-    console.log(`${host}/bucket`);
+    console.log(`${host}/bucket`); // eslint-disable-line no-console
     fetch(`${host}/bucket`)
       .then((response) =>
         response.json().then((json) => ({
@@ -52,4 +52,39 @@ export function fetchAllArtworkFromCloud(host: string): AppThunk {
       // eslint-disable-next-line no-console
       .catch((err) => console.error(err)); // TODO: better error handling.
   };
+}
+
+export function uploadArtworkToCloud(host: string, artwork: Artwork): void {
+  console.error(`${host}/bucket/mona-lisa/`);
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ title: 'React POST Request Example' }),
+  };
+  fetch(
+    `${host}/bucket/mona-lisa/`,
+    requestOptions,
+
+    // {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   mode: "no-cors",
+    //   body: JSON.stringify({ test: 'Testing' }),
+    // }
+  )
+    // .then((response) => {
+    //   console.error(response);
+    //   response.json().then((json) => ({
+    //     status: response.status,
+    //     json,
+    //   }));
+    // })
+    // eslint-disable-next-line no-console
+    .catch((err) => console.error(err)); // TODO: better error handling.
 }

@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { EditorOptions } from 'typescript';
 import './styles.css';
-import { Artwork, Critique } from '../../store/artwork/types';
+import { Artwork } from '../../store/artwork/types';
+import { uploadArtworkToCloud } from '../../store/artwork/actions';
 import Card from '../Card/Card';
 import Tag from '../Tag/Tag';
+import CritiqueComponent from '../CritiqueComponent/CritiqueComponent';
 
 interface Props {
   artwork?: Artwork | null;
+}
+
+let host: string;
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  host = `http://${window.location.hostname.concat(':6969')}`;
+} else {
+  host = 'public-address-for-some-remote-box';
 }
 
 const colors = [
@@ -22,15 +31,19 @@ const colors = [
 const EditPopup: React.FC<Props> = (props: Props) => {
   const [title, setTitle] = useState(props.artwork?.title ?? '');
   const [artist, setArtist] = useState(props.artwork?.artist ?? '');
-  const [desc, setDesc] = useState(props.artwork?.description ?? '');
+  const [description, setDescription] = useState(
+    props.artwork?.description ?? '',
+  );
   const [imageURLs, setImageURLS] = useState(props.artwork?.imageURLs ?? ['']);
   const [file, setFile] = useState<File | null>(null);
   const [tags, setTags] = useState(props.artwork?.tags ?? [['', '']]);
-  const [newTag, setnewTag] = useState('');
+  const [newTag, setNewTag] = useState('');
+  const [critiques, setCritiques] = useState(props.artwork?.critiques ?? []);
+  // const [newCritique, setNewCritique] = useState(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(file);
+    console.log(file); // eslint-disable-line no-console
   };
 
   return (
@@ -57,7 +70,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
  */}
 
       <div className="create-artwork-screen-container">
-        <span className="create-artwork-header">Create a New Artwork</span>
+        <span className="create-artwork-header">Create a New Critique</span>
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="info-row">
             <input
@@ -98,7 +111,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
             type="text"
             name="tag"
             value={newTag}
-            onChange={(e) => setnewTag(e.target.value)}
+            onChange={(e) => setNewTag(e.target.value)}
           />
           <input
             type="button"
@@ -123,9 +136,94 @@ const EditPopup: React.FC<Props> = (props: Props) => {
             }}
           />
           <div className="info-row">
-            <textarea value={desc} onChange={(e) => setDesc(e.target.value)} />
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
-          <input type="submit" value="Create" />
+
+          {/* <TouchableOpacity
+    style={[styles.container, styles.row]}
+    onPress={() => {
+      props.setIsPaused(false);
+      props.setCurrentCritique(props.critique);
+      playAudio(
+        props.critique.audioURL,
+        props.currentSound,
+        props.setCurrentSound,
+      );
+    }}>
+    <View style={[styles.col, { alignItems: 'stretch' }]}>
+      <Text style={styles.title}>{props.critique.title}</Text>
+      <Text style={styles.subtitle}>{props.critique.critic}</Text>
+    </View>
+    <View style={styles.col}>
+      <Text style={[styles.duration, styles.rightAligned]}>{ duration }</Text>
+      <View style={styles.row}>
+        <Tag data={props.critique.tags} />
+      </View>
+    </View>
+  </TouchableOpacity> */}
+          {critiques.map((critique) => (
+            <>
+              <CritiqueComponent critique={critique} />
+              <input
+                type="button"
+                value="X"
+                onClick={() => {
+                  setCritiques(
+                    critiques
+                      .slice(0, critiques.indexOf(critique))
+                      .concat(
+                        critiques.slice(
+                          critiques.indexOf(critique) + 1,
+                          critiques.length,
+                        ),
+                      ),
+                  );
+                }}
+              />
+            </>
+          ))}
+          {/* <input
+            className="title"
+            type="text"
+            name="tag"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+          /> */}
+          <input
+            type="button"
+            value="+"
+            onClick={() => {
+              setCritiques(
+                critiques.concat([
+                  {
+                    title: '',
+                    critic: '',
+                    transcript: '',
+                    audioURL: '',
+                    tags: [['', '']],
+                  },
+                ]),
+              );
+            }}
+          />
+
+          <input
+            type="submit"
+            value="Create"
+            onClick={(e) => {
+              uploadArtworkToCloud(host, {
+                title,
+                artist,
+                imageURLs,
+                description,
+                tags,
+                critiques,
+              });
+            }}
+          />
         </form>
       </div>
     </Card>
