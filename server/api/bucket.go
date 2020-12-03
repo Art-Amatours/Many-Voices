@@ -46,8 +46,6 @@ func (h *BucketHandler) getContentsHandler(w http.ResponseWriter, r *http.Reques
 
 func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST;  DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Origin; Content-Type; X-Auth-Token")
 	switch r.Method {
 	case http.MethodPost:
 		header := r.Header.Get("Content-Type")
@@ -61,6 +59,9 @@ func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.
 		}
 	case http.MethodDelete:
 		h.deleteObjectHandler(w, r)
+	case "OPTIONS":
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+		return
 	default:
 		http.Error(w, "This endpoint only supports POST and DELETE requests", http.StatusBadRequest)
 	}

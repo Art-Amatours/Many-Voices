@@ -55,19 +55,22 @@ export function fetchAllArtworkFromCloud(host: string): AppThunk {
 }
 
 export function uploadArtworkToCloud(host: string, artwork: Artwork): void {
-  console.error(`${host}/bucket/mona-lisa/`);
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ title: 'React POST Request Example' }),
-  };
+  // console.error(`${host}/bucket/mona-lisa/`); // eslint-disable-line no-console
+  const myHeaders = new Headers({
+    'Content-Type': 'application/json',
+  });
+  // const requestOptions = {
+  //   method: 'POST',
+  //   headers: myHeaders,
+  //   body: JSON.stringify({ title: 'React POST Request Example' }),
+  // };
   fetch(
-    `${host}/bucket/mona-lisa/`,
-    requestOptions,
-
+    `${host}/bucket/mona-lisa/test.json`,
+    {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({ title: 'React POST Request Example' }),
+    },
     // {
     //   method: 'POST',
     //   headers: {
