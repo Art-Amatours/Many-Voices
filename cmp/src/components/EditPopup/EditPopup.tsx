@@ -2,62 +2,210 @@ import React, { useState } from 'react';
 import { EditorOptions } from 'typescript';
 import './styles.css';
 import { Artwork, Critique } from '../../store/artwork/types';
+import { uploadArtworkToCloud } from '../../store/artwork/actions';
+import Card from '../Card/Card';
 import Tag from '../Tag/Tag';
+import CritiqueComponent from '../CritiqueComponent/CritiqueComponent';
 
 interface Props {
   artwork?: Artwork | null;
 }
 
+let host: string;
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  host = `http://${window.location.hostname.concat(':6969')}`;
+} else {
+  host = 'public-address-for-some-remote-box';
+}
+
+const colors = [
+  '#5fe382',
+  '#3fd9c2',
+  '#7589eb',
+  '#c55bcf',
+  '#a4db81',
+  '#e6b04c',
+  '#ed9c7b',
+];
+
 const EditPopup: React.FC<Props> = (props: Props) => {
   const [title, setTitle] = useState(props.artwork?.title ?? '');
   const [artist, setArtist] = useState(props.artwork?.artist ?? '');
-  const [desc, setDesc] = useState(props.artwork?.description ?? '');
+  const [description, setDescription] = useState(
+    props.artwork?.description ?? '',
+  );
   const [imageURLs, setImageURLS] = useState(props.artwork?.imageURLs ?? ['']);
   const [file, setFile] = useState<File | null>(null);
   const [tags, setTags] = useState(props.artwork?.tags ?? [['', '']]);
+  const [newTag, setNewTag] = useState('');
+  const [critiques, setCritiques] = useState(props.artwork?.critiques ?? []);
+  // const [newCritique, setNewCritique] = useState(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(file);
+    console.log(file); // eslint-disable-line no-console
   };
 
   return (
-    <div className="create-artwork-screen-container">
-      <span className="create-artwork-header">Create a New Artwork</span>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input
-          type="text"
-          name="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-          type="text"
-          name="artist"
-          value={artist}
-          onChange={(e) => setArtist(e.target.value)}
-        />
-        <textarea value={desc} onChange={(e) => setDesc(e.target.value)} />
-        <img src={imageURLs[0]} alt="artwork" />
-        <input
-          type="file"
-          name="file"
-          onChange={(e) => {
-            if (e.target.files && e.target.src) {
-              setImageURLS([e.target.src]);
-              setFile(e.target.files[0]);
-            }
-          }}
-        />
-        {tags.map((tag) => (
-          <>
-            <Tag name={tag[0]} backgroundColor={tag[1]} />
-            <input type="button" value="X" />
-          </>
-        ))}
-        <input type="submit" value="Create" />
-      </form>
-    </div>
+    <Card>
+      <div className="create-artwork-screen-container">
+        <span className="create-artwork-header">Create or Edit Artwork</span>
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <div className="info-row">
+            <input
+              placeholder="Title"
+              className="title"
+              type="text"
+              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="info-row">
+            <input
+              placeholder="Artist"
+              className="author"
+              type="text"
+              name="artist"
+              value={artist}
+              onChange={(e) => setArtist(e.target.value)}
+            />
+          </div>
+          {tags.map((tag) => (
+            <>
+              <Tag
+                key={`${tag[0]}${tag[1]}`}
+                name={tag[0]}
+                backgroundColor={tag[1]}
+              />
+              <input
+                key={`X${tag[0]}${tag[1]}`}
+                type="button"
+                value="X"
+                onClick={() => {
+                  setTags(
+                    tags
+                      .slice(0, tags.indexOf(tag))
+                      .concat(tags.slice(tags.indexOf(tag) + 1, tags.length)),
+                  );
+                }}
+              />
+            </>
+          ))}
+          <input
+            placeholder="New Tag"
+            type="text"
+            name="tag"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+          />
+          <input
+            type="button"
+            value="+"
+            onClick={() => {
+              setTags(
+                tags.concat([
+                  [newTag, colors[Math.floor(Math.random() * colors.length)]],
+                ]),
+              );
+            }}
+          />
+          <img src={imageURLs[0]} alt="artwork" />
+          <input
+            type="file"
+            name="file"
+            onChange={(e) => {
+              if (e.target.files) {
+                setImageURLS([URL.createObjectURL(e.target.files[0])]);
+                setFile(e.target.files[0]);
+              }
+            }}
+          />
+          <div className="info-row">
+            <textarea
+              placeholder="Description"
+              className="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          {critiques.map((critique, i) => (
+            <>
+              <CritiqueComponent
+                key={`${critique.title}${critique.critic}`}
+                critique={critique}
+                setCritique={(crit: Critique) => {
+                  const newCritiques = Array.from(critiques);
+                  newCritiques[i] = crit;
+                  setCritiques(newCritiques);
+                }}
+              />
+              <input
+                key={`X${critique.title}${critique.critic}`}
+                type="button"
+                value="X"
+                onClick={() => {
+                  setCritiques(
+                    critiques
+                      .slice(0, critiques.indexOf(critique))
+                      .concat(
+                        critiques.slice(
+                          critiques.indexOf(critique) + 1,
+                          critiques.length,
+                        ),
+                      ),
+                  );
+                }}
+              />
+            </>
+          ))}
+          {/* <input
+            className="title"
+            type="text"
+            name="tag"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+          /> */}
+          <input
+            type="button"
+            value="+"
+            onClick={() => {
+              setCritiques(
+                critiques.concat([
+                  {
+                    title: '',
+                    critic: '',
+                    transcript: '',
+                    audioURL: '',
+                    tags: [['', '']],
+                  },
+                ]),
+              );
+            }}
+          />
+
+          <input
+            type="submit"
+            value="Create"
+            onClick={(e) => {
+              window.location.reload();
+              uploadArtworkToCloud(
+                host,
+                {
+                  title,
+                  artist,
+                  imageURLs,
+                  description,
+                  tags,
+                  critiques,
+                },
+                file,
+              );
+            }}
+          />
+        </form>
+      </div>
+    </Card>
   );
 };
 

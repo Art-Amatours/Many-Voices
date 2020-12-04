@@ -13,6 +13,7 @@ export interface Critique {
   transcript: string;
   tags: string[][];
   audioURL: string;
+  audioFile?: File | null;
 }
 
 export interface ArtworkState {

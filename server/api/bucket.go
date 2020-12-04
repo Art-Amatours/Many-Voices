@@ -45,10 +45,11 @@ func (h *BucketHandler) getContentsHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	switch r.Method {
 	case http.MethodPost:
 		header := r.Header.Get("Content-Type")
-		if header == "application/json" {
+		if strings.Contains(header, "application/json") {
 			h.postNewJSONObjectHandler(w, r)
 		} else if strings.Contains(header, "multipart/form-data") {
 			h.postNewFileObjectHandler(w, r)
@@ -58,6 +59,9 @@ func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.
 		}
 	case http.MethodDelete:
 		h.deleteObjectHandler(w, r)
+	case "OPTIONS":
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+		return
 	default:
 		http.Error(w, "This endpoint only supports POST and DELETE requests", http.StatusBadRequest)
 	}
