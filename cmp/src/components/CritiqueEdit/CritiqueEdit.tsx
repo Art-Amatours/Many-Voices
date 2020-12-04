@@ -44,6 +44,7 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="info-row">
             <input
+              placeholder="Title"
               className="title"
               type="text"
               name="title"
@@ -53,6 +54,7 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
           </div>
           <div className="info-row">
             <input
+              placeholder="Critic"
               className="author"
               type="text"
               name="artist"
@@ -82,7 +84,7 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
             </>
           ))}
           <input
-            className="title"
+            placeholder="New Tag"
             type="text"
             name="tag"
             value={newTag}
@@ -112,6 +114,8 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
           />
           <div className="info-row">
             <textarea
+              placeholder="Transcript"
+              className="Transcript"
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
             />

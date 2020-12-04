@@ -49,10 +49,11 @@ const EditPopup: React.FC<Props> = (props: Props) => {
   return (
     <Card>
       <div className="create-artwork-screen-container">
-        <span className="create-artwork-header">Create a New Critique</span>
+        <span className="create-artwork-header">Create or Edit Artwork</span>
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className="info-row">
             <input
+              placeholder="Title"
               className="title"
               type="text"
               name="title"
@@ -62,6 +63,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
           </div>
           <div className="info-row">
             <input
+              placeholder="Artist"
               className="author"
               type="text"
               name="artist"
@@ -91,7 +93,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
             </>
           ))}
           <input
-            className="title"
+            placeholder="New Tag"
             type="text"
             name="tag"
             value={newTag}
@@ -121,6 +123,8 @@ const EditPopup: React.FC<Props> = (props: Props) => {
           />
           <div className="info-row">
             <textarea
+              placeholder="Description"
+              className="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />

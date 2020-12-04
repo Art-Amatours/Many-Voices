@@ -46,20 +46,19 @@ const CritiqueView: React.FC<Props> = (props: Props) => {
         <div className="info-row">
           <p className="author">{critic}</p>
         </div>
-        {tags.map((tag) => (
-          <>
-            <Tag name={tag[0]} backgroundColor={tag[1]} />
-          </>
-        ))}
+        <div className="tag-row">
+          {tags.map((tag) => (
+            <>
+              <Tag name={tag[0]} backgroundColor={tag[1]} />
+            </>
+          ))}
+        </div>
         <p className="title">{newTag}</p>
 
         {/* <img src={imageURLs[0]} alt="artwork" /> */}
 
         <div className="info-row">
-          <textarea
-            value={transcript}
-            onChange={(e) => setTranscript(e.target.value)}
-          />
+          <textarea readOnly className="Transcript" value={transcript} />
         </div>
       </div>
     </Card>
