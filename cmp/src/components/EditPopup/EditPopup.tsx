@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { EditorOptions } from 'typescript';
 import './styles.css';
-import { Artwork } from '../../store/artwork/types';
+import { Artwork, Critique } from '../../store/artwork/types';
 import { uploadArtworkToCloud } from '../../store/artwork/actions';
 import Card from '../Card/Card';
 import Tag from '../Tag/Tag';
@@ -48,27 +48,6 @@ const EditPopup: React.FC<Props> = (props: Props) => {
 
   return (
     <Card>
-      {/* <div className="create-artwork-screen-container">
-      <div className="info">
-        <div className="info-row">
-          <span className="title">{props.title}</span>
-          <span className="num-critiques">
-            {props.numCritiques} critique{props.numCritiques !== 1 && 's'}
-          </span>
-        </div>
-        <div className="info-row">
-          <span className="author">{props.artist}</span>
-        </div>
-        <div className="tag-row">
-          {props.tagData.map(([name, backgroundColor]) => (
-            <Tag name={name} backgroundColor={backgroundColor} />
-          ))}
-        </div>
-      </div>
-      <img src={props.imageURLs[0]} alt={`Artwork: ${props.title}`} />
-    </div>
- */}
-
       <div className="create-artwork-screen-container">
         <span className="create-artwork-header">Create a New Critique</span>
         <form onSubmit={(e) => handleSubmit(e)}>
@@ -92,8 +71,13 @@ const EditPopup: React.FC<Props> = (props: Props) => {
           </div>
           {tags.map((tag) => (
             <>
-              <Tag name={tag[0]} backgroundColor={tag[1]} />
+              <Tag
+                key={`${tag[0]}${tag[1]}`}
+                name={tag[0]}
+                backgroundColor={tag[1]}
+              />
               <input
+                key={`X${tag[0]}${tag[1]}`}
                 type="button"
                 value="X"
                 onClick={() => {
@@ -141,33 +125,19 @@ const EditPopup: React.FC<Props> = (props: Props) => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-
-          {/* <TouchableOpacity
-    style={[styles.container, styles.row]}
-    onPress={() => {
-      props.setIsPaused(false);
-      props.setCurrentCritique(props.critique);
-      playAudio(
-        props.critique.audioURL,
-        props.currentSound,
-        props.setCurrentSound,
-      );
-    }}>
-    <View style={[styles.col, { alignItems: 'stretch' }]}>
-      <Text style={styles.title}>{props.critique.title}</Text>
-      <Text style={styles.subtitle}>{props.critique.critic}</Text>
-    </View>
-    <View style={styles.col}>
-      <Text style={[styles.duration, styles.rightAligned]}>{ duration }</Text>
-      <View style={styles.row}>
-        <Tag data={props.critique.tags} />
-      </View>
-    </View>
-  </TouchableOpacity> */}
-          {critiques.map((critique) => (
+          {critiques.map((critique, i) => (
             <>
-              <CritiqueComponent critique={critique} />
+              <CritiqueComponent
+                key={`${critique.title}${critique.critic}`}
+                critique={critique}
+                setCritique={(crit: Critique) => {
+                  const newCritiques = Array.from(critiques);
+                  newCritiques[i] = crit;
+                  setCritiques(newCritiques);
+                }}
+              />
               <input
+                key={`X${critique.title}${critique.critic}`}
                 type="button"
                 value="X"
                 onClick={() => {
@@ -214,14 +184,19 @@ const EditPopup: React.FC<Props> = (props: Props) => {
             type="submit"
             value="Create"
             onClick={(e) => {
-              uploadArtworkToCloud(host, {
-                title,
-                artist,
-                imageURLs,
-                description,
-                tags,
-                critiques,
-              });
+              e.preventDefault();
+              uploadArtworkToCloud(
+                host,
+                {
+                  title,
+                  artist,
+                  imageURLs,
+                  description,
+                  tags,
+                  critiques,
+                },
+                file,
+              );
             }}
           />
         </form>

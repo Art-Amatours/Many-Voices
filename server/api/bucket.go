@@ -49,7 +49,7 @@ func (h *BucketHandler) objectSubResourceHandler(w http.ResponseWriter, r *http.
 	switch r.Method {
 	case http.MethodPost:
 		header := r.Header.Get("Content-Type")
-		if header == "application/json" {
+		if strings.Contains(header, "application/json") {
 			h.postNewJSONObjectHandler(w, r)
 		} else if strings.Contains(header, "multipart/form-data") {
 			h.postNewFileObjectHandler(w, r)

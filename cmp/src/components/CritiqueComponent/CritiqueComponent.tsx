@@ -6,35 +6,45 @@ import CritiqueView from '../CritiqueView/CritiqueView';
 
 interface Props {
   critique?: Critique | null;
+  setCritique: (critique: Critique) => void;
 }
 
 const CritiqueComponent: React.FC<Props> = (props: Props) => {
-  const [critique, setCritique] = useState(props.critique);
-  const [critiqueView, setCritiqueView] = useState(
-    <CritiqueView critique={props.critique} />,
-  );
+  let critiqueView;
+  // =
+  //   <CritiqueView critique={critique} />,
+  // );
   const [isEdit, setIsEdit] = useState(false);
 
-  return (
-    <button
-      type="submit"
-      onClick={(e) => {
-        if (isEdit) {
-          setCritiqueView(<CritiqueView critique={props.critique} />);
+  if (isEdit) {
+    critiqueView = (
+      <CritiqueEdit
+        critique={props.critique}
+        setCritique={(crit: Critique) => {
           setIsEdit(false);
-        } else {
-          setCritiqueView(
-            <CritiqueEdit
-              critique={props.critique}
-              setCritique={setCritique}
-            />,
-          );
+          props.setCritique(crit);
+        }}
+      />
+    );
+  } else {
+    critiqueView = (
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.preventDefault();
           setIsEdit(true);
-        }
-      }}>
-      {critiqueView}
-    </button>
-  );
+        }}
+        onKeyDown={(e) => {
+          e.preventDefault();
+          setIsEdit(true);
+        }}>
+        <CritiqueView critique={props.critique} />
+      </div>
+    );
+  }
+
+  return critiqueView;
 };
 
 CritiqueComponent.defaultProps = {

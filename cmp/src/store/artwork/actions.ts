@@ -54,15 +54,71 @@ export function fetchAllArtworkFromCloud(host: string): AppThunk {
   };
 }
 
-export function uploadArtworkToCloud(host: string, artwork: Artwork): void {
-  const myHeaders = new Headers({
+export function uploadArtworkToCloud(
+  host: string,
+  artwork: Artwork,
+  image: File | null,
+): void {
+  const JSONHeaders = new Headers({
     'Content-Type': 'application/json',
   });
-  fetch(`${host}/bucket/newFolder/test.json`, {
+
+  const artworkTitle = artwork.title.replaceAll(' ', '-').toLowerCase();
+  const rootURL = `${host}/bucket/${artworkTitle}`;
+
+  fetch(`${rootURL}/${artworkTitle}.json`, {
     method: 'POST',
-    headers: myHeaders,
-    body: JSON.stringify({ title: 'React POST Request Example' }),
+    headers: JSONHeaders,
+    body: JSON.stringify({
+      title: artwork.title,
+      artist: artwork.artist,
+      description: artwork.description,
+      tags: artwork.tags,
+    }),
   })
     // eslint-disable-next-line no-console
     .catch((err) => console.error(err)); // TODO: better error handling.
+  if (image) {
+    let formData = new FormData();
+
+    formData.append('file', image);
+    fetch(
+      `${rootURL}/images/${image.name.replaceAll(' ', '-').toLowerCase()}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+      // eslint-disable-next-line no-console
+      .catch((err) => console.error(err)); // TODO: better error handling.
+    artwork.critiques.forEach((critique) => {
+      const critiqueTitle = critique.title.replaceAll(' ', '-').toLowerCase();
+
+      fetch(`${rootURL}/critiques/${critiqueTitle}/${critiqueTitle}.json`, {
+        method: 'POST',
+        headers: JSONHeaders,
+        body: JSON.stringify({
+          title: critique.title,
+          critic: critique.critic,
+          transcript: critique.transcript,
+          tags: critique.tags,
+          length: 30,
+        }),
+      })
+        // eslint-disable-next-line no-console
+        .catch((err) => console.error(err)); // TODO: better error handling.
+
+      if (critique.audioFile != null) {
+        formData = new FormData();
+
+        formData.append('file', critique.audioFile);
+        fetch(`${rootURL}/critiques/${critiqueTitle}/${critiqueTitle}.mp3`, {
+          method: 'POST',
+          body: formData,
+        })
+          // eslint-disable-next-line no-console
+          .catch((err) => console.error(err)); // TODO: better error handling.
+      }
+    });
+  }
 }

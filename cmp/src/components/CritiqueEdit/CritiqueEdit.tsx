@@ -62,8 +62,13 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
           </div>
           {tags.map((tag) => (
             <>
-              <Tag name={tag[0]} backgroundColor={tag[1]} />
+              <Tag
+                key={`${tag[0]}${tag[1]}`}
+                name={tag[0]}
+                backgroundColor={tag[1]}
+              />
               <input
+                key={`X${tag[0]}${tag[1]}`}
                 type="button"
                 value="X"
                 onClick={() => {
@@ -113,16 +118,19 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
           </div>
           <input
             type="submit"
-            value="Create"
+            value="Save"
             onClick={(e) => {
+              e.preventDefault();
               props.setCritique({
                 title,
                 critic,
                 tags,
-                audioURL: file
-                  ? URL.createObjectURL(file)
-                  : props.critique?.audioURL ?? '',
+                audioURL:
+                  file != null
+                    ? URL.createObjectURL(file)
+                    : props.critique?.audioURL ?? '',
                 transcript,
+                audioFile: file,
               });
             }}
           />

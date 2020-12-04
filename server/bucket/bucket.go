@@ -317,6 +317,7 @@ func (b *Bucket) ReplaceExistingFile(objectPath string, file []byte) error {
 		Body:   bytes.NewReader(file),
 	})
 	if err != nil {
+		fmt.Println(err)
 		return fmt.Errorf("failed to upload new %s: %v", objectPath, err)
 	}
 

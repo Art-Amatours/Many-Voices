@@ -26,7 +26,11 @@ const ArtworkCard: React.FC<Props> = (props) => (
         </div>
         <div className="tag-row">
           {props.tagData.map(([name, backgroundColor]) => (
-            <Tag name={name} backgroundColor={backgroundColor} />
+            <Tag
+              key={name + backgroundColor}
+              name={name}
+              backgroundColor={backgroundColor}
+            />
           ))}
         </div>
       </div>
