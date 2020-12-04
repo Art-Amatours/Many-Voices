@@ -184,7 +184,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
             type="submit"
             value="Create"
             onClick={(e) => {
-              e.preventDefault();
+              window.location.reload();
               uploadArtworkToCloud(
                 host,
                 {

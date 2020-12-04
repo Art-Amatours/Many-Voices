@@ -1,3 +1,4 @@
+import { FILE } from 'dns';
 import { Dispatch } from 'redux';
 import { AppThunk } from '..';
 import {
@@ -66,6 +67,29 @@ export function uploadArtworkToCloud(
   const artworkTitle = artwork.title.replaceAll(' ', '-').toLowerCase();
   const rootURL = `${host}/bucket/${artworkTitle}`;
 
+  const emptyFormData = new FormData();
+  const emptyFile = new File([], 'empty.txt');
+
+  emptyFormData.append('file', emptyFile);
+  fetch(`${rootURL}/`, {
+    method: 'POST',
+    body: emptyFormData,
+  })
+    // eslint-disable-next-line no-console
+    .catch((err) => console.error(err)); // TODO: better error handling.
+  fetch(`${rootURL}/images/`, {
+    method: 'POST',
+    body: emptyFormData,
+  })
+    // eslint-disable-next-line no-console
+    .catch((err) => console.error(err)); // TODO: better error handling.
+  fetch(`${rootURL}/critiques/`, {
+    method: 'POST',
+    body: emptyFormData,
+  })
+    // eslint-disable-next-line no-console
+    .catch((err) => console.error(err)); // TODO: better error handling.
+
   fetch(`${rootURL}/${artworkTitle}.json`, {
     method: 'POST',
     headers: JSONHeaders,
@@ -93,6 +117,13 @@ export function uploadArtworkToCloud(
       .catch((err) => console.error(err)); // TODO: better error handling.
     artwork.critiques.forEach((critique) => {
       const critiqueTitle = critique.title.replaceAll(' ', '-').toLowerCase();
+
+      fetch(`${rootURL}/critiques/${critiqueTitle}/`, {
+        method: 'POST',
+        body: emptyFormData,
+      })
+        // eslint-disable-next-line no-console
+        .catch((err) => console.error(err)); // TODO: better error handling.
 
       fetch(`${rootURL}/critiques/${critiqueTitle}/${critiqueTitle}.json`, {
         method: 'POST',

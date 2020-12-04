@@ -104,6 +104,7 @@ func (b *Bucket) FetchAllArtwork() ([]*ArtworkInfo, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to list all objects in the S3 bucket: %v", err)
 	}
+	fmt.Printf("%+v", res)
 
 	// Build a list of artworkInfo objects for all artwork in the bucket.
 	artworkList := make([]*ArtworkInfo, 0)
