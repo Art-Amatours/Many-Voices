@@ -6,9 +6,12 @@ import { uploadArtworkToCloud } from '../../store/artwork/actions';
 import Card from '../Card/Card';
 import Tag from '../Tag/Tag';
 import CritiqueComponent from '../CritiqueComponent/CritiqueComponent';
+import EmptyArtwork from '../../data/images/EmptyArtwork.png';
+import Delete from '../../data/images/Delete.png';
 
 interface Props {
   artwork?: Artwork | null;
+  setArtwork: (artwork: Artwork) => void;
 }
 
 let host: string;
@@ -34,9 +37,11 @@ const EditPopup: React.FC<Props> = (props: Props) => {
   const [description, setDescription] = useState(
     props.artwork?.description ?? '',
   );
-  const [imageURLs, setImageURLS] = useState(props.artwork?.imageURLs ?? ['']);
+  const [imageURLs, setImageURLS] = useState(
+    props.artwork?.imageURLs ?? [EmptyArtwork],
+  );
   const [file, setFile] = useState<File | null>(null);
-  const [tags, setTags] = useState(props.artwork?.tags ?? [['', '']]);
+  const [tags, setTags] = useState(props.artwork?.tags ?? []);
   const [newTag, setNewTag] = useState('');
   const [critiques, setCritiques] = useState(props.artwork?.critiques ?? []);
   // const [newCritique, setNewCritique] = useState(null);
@@ -45,6 +50,8 @@ const EditPopup: React.FC<Props> = (props: Props) => {
     e.preventDefault();
     console.log(file); // eslint-disable-line no-console
   };
+
+  console.log(props.artwork?.objectPath); // eslint-disable-line no-console
 
   return (
     <Card>
@@ -71,33 +78,48 @@ const EditPopup: React.FC<Props> = (props: Props) => {
               onChange={(e) => setArtist(e.target.value)}
             />
           </div>
-          {tags.map((tag) => (
-            <>
-              <Tag
-                key={`${tag[0]}${tag[1]}`}
-                name={tag[0]}
-                backgroundColor={tag[1]}
-              />
-              <input
-                key={`X${tag[0]}${tag[1]}`}
-                type="button"
-                value="X"
-                onClick={() => {
-                  setTags(
-                    tags
-                      .slice(0, tags.indexOf(tag))
-                      .concat(tags.slice(tags.indexOf(tag) + 1, tags.length)),
-                  );
-                }}
-              />
-            </>
-          ))}
+          <div className="tag-row">
+            {tags.map((tag) => (
+              <div className="deletable">
+                <Tag
+                  key={`${tag[0]}${tag[1]}`}
+                  name={tag[0]}
+                  backgroundColor={tag[1]}
+                />
+                <input
+                  key={`X${tag[0]}${tag[1]}`}
+                  type="image"
+                  src={Delete}
+                  alt="X"
+                  className="tagDelete"
+                  onClick={() => {
+                    setTags(
+                      tags
+                        .slice(0, tags.indexOf(tag))
+                        .concat(tags.slice(tags.indexOf(tag) + 1, tags.length)),
+                    );
+                  }}
+                />
+              </div>
+            ))}
+          </div>
           <input
             placeholder="New Tag"
             type="text"
             name="tag"
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                setTags(
+                  tags.concat([
+                    [newTag, colors[Math.floor(Math.random() * colors.length)]],
+                  ]),
+                );
+                setNewTag('');
+              }
+            }}
           />
           <input
             type="button"
@@ -110,17 +132,40 @@ const EditPopup: React.FC<Props> = (props: Props) => {
               );
             }}
           />
-          <img src={imageURLs[0]} alt="artwork" />
-          <input
+
+          <div className="image-upload">
+            <label htmlFor="file-input">
+              <img src={imageURLs[0]} alt="Artwork" />
+
+              <input
+                type="file"
+                id="file-input"
+                name="file"
+                accept="image/x-png,image/gif,image/jpeg"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    setImageURLS([URL.createObjectURL(e.target.files[0])]);
+                    setFile(e.target.files[0]);
+                  }
+                }}
+              />
+            </label>
+          </div>
+
+          {/* <img src={EmptyArtwork} alt="artwork" /> */}
+          {/* <input
             type="file"
+            src={EmptyArtwork}
+            alt="artwork"
             name="file"
+            accept="image/x-png,image/gif,image/jpeg"
             onChange={(e) => {
               if (e.target.files) {
                 setImageURLS([URL.createObjectURL(e.target.files[0])]);
                 setFile(e.target.files[0]);
               }
             }}
-          />
+          /> */}
           <div className="info-row">
             <textarea
               placeholder="Description"
@@ -130,7 +175,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
             />
           </div>
           {critiques.map((critique, i) => (
-            <>
+            <div className="deletable">
               <CritiqueComponent
                 key={`${critique.title}${critique.critic}`}
                 critique={critique}
@@ -142,8 +187,10 @@ const EditPopup: React.FC<Props> = (props: Props) => {
               />
               <input
                 key={`X${critique.title}${critique.critic}`}
-                type="button"
-                value="X"
+                type="image"
+                src={Delete}
+                alt="X"
+                className="critiqueDelete"
                 onClick={() => {
                   setCritiques(
                     critiques
@@ -157,7 +204,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
                   );
                 }}
               />
-            </>
+            </div>
           ))}
           {/* <input
             className="title"
@@ -178,6 +225,7 @@ const EditPopup: React.FC<Props> = (props: Props) => {
                     transcript: '',
                     audioURL: '',
                     tags: [['', '']],
+                    objectPath: '',
                   },
                 ]),
               );
@@ -186,9 +234,9 @@ const EditPopup: React.FC<Props> = (props: Props) => {
 
           <input
             type="submit"
-            value="Create"
+            value="Save"
             onClick={(e) => {
-              window.location.reload();
+              // window.location.reload();
               uploadArtworkToCloud(
                 host,
                 {
@@ -198,9 +246,21 @@ const EditPopup: React.FC<Props> = (props: Props) => {
                   description,
                   tags,
                   critiques,
+                  objectPath:
+                    props.artwork != null ? props.artwork?.objectPath : '',
                 },
                 file,
               );
+              props.setArtwork({
+                title,
+                artist,
+                imageURLs,
+                description,
+                tags,
+                critiques,
+                objectPath:
+                  props.artwork != null ? props.artwork?.objectPath : '',
+              });
             }}
           />
         </form>

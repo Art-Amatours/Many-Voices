@@ -5,6 +5,7 @@ export interface Artwork {
   tags: string[][];
   imageURLs: string[];
   critiques: Critique[];
+  objectPath: string;
 }
 
 export interface Critique {
@@ -14,6 +15,7 @@ export interface Critique {
   tags: string[][];
   audioURL: string;
   audioFile?: File | null;
+  objectPath: string;
 }
 
 export interface ArtworkState {

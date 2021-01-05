@@ -1,42 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles.css';
+import { Artwork } from '../../store/artwork/types';
 import Card from '../Card/Card';
 import Tag from '../Tag/Tag';
+import ArtworkEdit from '../ArtworkEdit/ArtworkEdit';
+import ArtworkView from '../ArtworkView/ArtworkView';
 
 interface Props {
-  title: string;
-  artist: string;
-  numCritiques: number;
-  imageURLs: string[];
-  tagData: string[][];
+  artwork?: Artwork | null;
 }
 
-const ArtworkCard: React.FC<Props> = (props) => (
-  <Card>
-    <div className="artwork-card">
-      <div className="info">
-        <div className="info-row">
-          <span className="title">{props.title}</span>
-          <span className="num-critiques">
-            {props.numCritiques} critique{props.numCritiques !== 1 && 's'}
-          </span>
-        </div>
-        <div className="info-row">
-          <span className="author">{props.artist}</span>
-        </div>
-        <div className="tag-row">
-          {props.tagData.map(([name, backgroundColor]) => (
-            <Tag
-              key={name + backgroundColor}
-              name={name}
-              backgroundColor={backgroundColor}
-            />
-          ))}
-        </div>
+const ArtworkCard: React.FC<Props> = (props) => {
+  const [artwork, setArtwork] = useState(props.artwork);
+  let critiqueView;
+  // =
+  //   <CritiqueView critique={critique} />,
+  // );
+  const [isEdit, setIsEdit] = useState(false);
+
+  if (isEdit || artwork == null) {
+    critiqueView = (
+      <ArtworkEdit
+        artwork={artwork}
+        setArtwork={(art: Artwork) => {
+          setIsEdit(false);
+          setArtwork(art);
+        }}
+      />
+    );
+  } else {
+    critiqueView = (
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.preventDefault();
+          setIsEdit(true);
+        }}
+        onKeyDown={(e) => {
+          e.preventDefault();
+          setIsEdit(true);
+        }}>
+        <ArtworkView artwork={artwork} />
       </div>
-      <img src={props.imageURLs[0]} alt={`Artwork: ${props.title}`} />
-    </div>
-  </Card>
-);
+    );
+  }
+
+  return critiqueView;
+};
 
 export default ArtworkCard;

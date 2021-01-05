@@ -135,6 +135,7 @@ const CritiqueEdit: React.FC<Props> = (props: Props) => {
                     : props.critique?.audioURL ?? '',
                 transcript,
                 audioFile: file,
+                objectPath: props.critique ? props.critique?.objectPath : '',
               });
             }}
           />

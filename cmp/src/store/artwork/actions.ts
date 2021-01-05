@@ -1,5 +1,6 @@
 import { FILE } from 'dns';
 import { Dispatch } from 'redux';
+import { v4 as uuidv4 } from 'uuid';
 import { AppThunk } from '..';
 import {
   Artwork,
@@ -64,8 +65,13 @@ export function uploadArtworkToCloud(
     'Content-Type': 'application/json',
   });
 
-  const artworkTitle = artwork.title.replaceAll(' ', '-').toLowerCase();
-  const rootURL = `${host}/bucket/${artworkTitle}`;
+  const artworkTitle =
+    artwork.objectPath === ''
+      ? artwork.title.replaceAll(' ', '-').toLowerCase()
+      : artwork.objectPath.split('/')[0];
+  const rootURL = `${host}/bucket/${artworkTitle}${
+    artwork.objectPath === '' ? uuidv4() : ''
+  }`;
 
   const emptyFormData = new FormData();
   const emptyFile = new File([], 'empty.txt');
@@ -90,7 +96,12 @@ export function uploadArtworkToCloud(
     // eslint-disable-next-line no-console
     .catch((err) => console.error(err)); // TODO: better error handling.
 
-  fetch(`${rootURL}/${artworkTitle}.json`, {
+  const jsonURL =
+    artwork.objectPath === ''
+      ? `${host}/bucket/${artworkTitle}/${artworkTitle}.json`
+      : `${host}/bucket/${artwork.objectPath}`;
+
+  fetch(jsonURL, {
     method: 'POST',
     headers: JSONHeaders,
     body: JSON.stringify({
@@ -103,7 +114,20 @@ export function uploadArtworkToCloud(
     // eslint-disable-next-line no-console
     .catch((err) => console.error(err)); // TODO: better error handling.
   if (image) {
-    let formData = new FormData();
+    fetch(`${rootURL}/images/`, {
+      headers: JSONHeaders,
+      method: 'DELETE',
+    })
+      // eslint-disable-next-line no-console
+      .catch((err) => console.error(err)); // TODO: better error handling.
+
+    fetch(`${rootURL}/images/`, {
+      method: 'POST',
+      body: emptyFormData,
+    })
+      // eslint-disable-next-line no-console
+      .catch((err) => console.error(err)); // TODO: better error handling.
+    const formData = new FormData();
 
     formData.append('file', image);
     fetch(
@@ -115,41 +139,68 @@ export function uploadArtworkToCloud(
     )
       // eslint-disable-next-line no-console
       .catch((err) => console.error(err)); // TODO: better error handling.
-    artwork.critiques.forEach((critique) => {
-      const critiqueTitle = critique.title.replaceAll(' ', '-').toLowerCase();
-
-      fetch(`${rootURL}/critiques/${critiqueTitle}/`, {
-        method: 'POST',
-        body: emptyFormData,
-      })
-        // eslint-disable-next-line no-console
-        .catch((err) => console.error(err)); // TODO: better error handling.
-
-      fetch(`${rootURL}/critiques/${critiqueTitle}/${critiqueTitle}.json`, {
-        method: 'POST',
-        headers: JSONHeaders,
-        body: JSON.stringify({
-          title: critique.title,
-          critic: critique.critic,
-          transcript: critique.transcript,
-          tags: critique.tags,
-          length: 30,
-        }),
-      })
-        // eslint-disable-next-line no-console
-        .catch((err) => console.error(err)); // TODO: better error handling.
-
-      if (critique.audioFile != null) {
-        formData = new FormData();
-
-        formData.append('file', critique.audioFile);
-        fetch(`${rootURL}/critiques/${critiqueTitle}/${critiqueTitle}.mp3`, {
-          method: 'POST',
-          body: formData,
-        })
-          // eslint-disable-next-line no-console
-          .catch((err) => console.error(err)); // TODO: better error handling.
-      }
-    });
   }
+  artwork.critiques.forEach((critique) => {
+    const critiqueTitle =
+      critique.objectPath === ''
+        ? `${critique.title.replaceAll(' ', '-').toLowerCase()}`
+        : critique.objectPath.split('/')[2];
+
+    const critiqueRootURL = `${rootURL}/critiques/${critiqueTitle}${
+      critique.objectPath === '' ? uuidv4() : ''
+    }`;
+
+    fetch(`${critiqueRootURL}/`, {
+      method: 'POST',
+      body: emptyFormData,
+    })
+      // eslint-disable-next-line no-console
+      .catch((err) => console.error(err)); // TODO: better error handling.
+
+    const critiquejsonURL =
+      critique.objectPath === ''
+        ? `${critiqueRootURL}/${critiqueTitle}.json`
+        : `${host}/bucket/${critique.objectPath}`;
+
+    fetch(critiquejsonURL, {
+      method: 'POST',
+      headers: JSONHeaders,
+      body: JSON.stringify({
+        title: critique.title,
+        critic: critique.critic,
+        transcript: critique.transcript,
+        tags: critique.tags,
+        length: 30,
+      }),
+    })
+      // eslint-disable-next-line no-console
+      .catch((err) => console.error(err)); // TODO: better error handling.
+
+    if (critique.audioFile) {
+      const formData = new FormData();
+
+      formData.append('file', critique.audioFile);
+      fetch(`${critiqueRootURL}/${critiqueTitle}.mp3`, {
+        method: 'POST',
+        body: formData,
+      })
+        // eslint-disable-next-line no-console
+        .catch((err) => console.error(err)); // TODO: better error handling.
+    }
+  });
+}
+
+export function deleteArtworkFromCloud(host: string, artwork: Artwork): void {
+  const JSONHeaders = new Headers({
+    'Content-Type': 'application/json',
+  });
+
+  const artworkTitle = artwork.objectPath.split('/')[0];
+  const rootURL = `${host}/bucket/${artworkTitle}`;
+
+  fetch(`${rootURL}/`, {
+    method: 'DELETE',
+  })
+    // eslint-disable-next-line no-console
+    .catch((err) => console.error(err)); // TODO: better error handling.
 }
